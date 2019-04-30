@@ -27,6 +27,7 @@ public class Model implements IModel {
             System.out.println("SQLState: " + e.getSQLState());
             System.out.println("VendorError: " + e.getErrorCode());
         }
+        return false;
     }
 
     @Override
