@@ -7,18 +7,25 @@ import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
+
+import java.util.ArrayList;
 import java.util.ResourceBundle;
 import Entites.*;
 import Model.*;
 
 public class Controller {
 
-    Model database = new Model();
+    Model database;
+    ArrayList<Book> allBooks;
+    User currentUser;
+
+
     TextField currentCount[];
     Button addToCartButton[];
     int HORIZONTAL_SHIFT = 800/3;
@@ -26,6 +33,7 @@ public class Controller {
     int VERTICAL_SHIFT = 210;
     int MARGIN = 15;
     int BOOKS_PER_ROW = 3;
+    String MANAGER_CODE = "1234";
 
     @FXML
     private ResourceBundle resources;
@@ -76,6 +84,9 @@ public class Controller {
     private Button registerButton;
 
     @FXML
+    Label errorLoginLabel;
+
+    @FXML
     private Label slogan;
 
     @FXML
@@ -83,6 +94,15 @@ public class Controller {
 
     @FXML
     private TextField searchAuthorTextbox;
+
+    @FXML
+    private CheckBox isManagerCheckBox;
+
+    @FXML
+    private PasswordField secretCodeTextField;
+
+    @FXML
+    private ImageView validIconManager;
 
     @FXML
     private Button searchButton;
@@ -102,22 +122,49 @@ public class Controller {
     @FXML
     void loginClicked(MouseEvent event) {
         if(emailTextbox.isVisible()) {
-
+            establishNewConncetion();
             String email = emailTextbox.getText();
             String password = passwordTextbox.getText();
-            showMarket();
-            prepareBooks();
-
+            currentUser = database.logIn(email, password);
+            if(currentUser == null && !(email.equals("admin") && password.equals("admin"))) {
+                showErrorLogIn();
+            } else {
+                showMarket();
+                prepareBooks(allBooks);
+            }
         } else {
             showLogin();
         }
     }
 
-
     @FXML
     void registerClicked(MouseEvent event) {
         if(rEmailTextbox.isVisible()) {
-            //todo real registering stuff
+            establishNewConncetion();
+            String email = rEmailTextbox.getText();
+            String password = rPasswordTextbox.getText();
+            String telefon = telefonTextbox.getText();
+            String firstName = firstNameTextbox.getText();
+            String lastName = lastNameTextbox.getText();
+            String address = addressTextbox.getText();
+
+            User newUser = new User();
+            newUser.setEmailAddress(email);
+            newUser.setFirstName(firstName);
+            newUser.setLastName(lastName);
+            newUser.setPassword(password);
+            newUser.setPhoneNumber(telefon);
+            newUser.setShippingAddress(address);
+            if(validIconManager.isVisible()) {
+                newUser.setPromoted(true);
+            } else {
+                newUser.setPromoted(false);
+            }
+            if(database.register(newUser)) {
+                showMarket();
+            } else {
+                showErrorLogIn();
+            }
         } else {
             showRegister();
         }
@@ -138,11 +185,21 @@ public class Controller {
     }
 
     @FXML
+    void validateManagerCode(KeyEvent event) {
+        String password = secretCodeTextField.getText();
+        if(password.equals(MANAGER_CODE)) {
+            validIconManager.setVisible(true);
+        } else {
+            validIconManager.setVisible(false);
+        }
+    }
+
+    @FXML
     void increaseBPP(MouseEvent event) {
         if(BOOKS_PER_ROW != 5) {
             BOOKS_PER_ROW++;
             HORIZONTAL_SHIFT = (800 / BOOKS_PER_ROW);
-            prepareBooks();
+            prepareBooks(allBooks);
         }
     }
 
@@ -151,7 +208,7 @@ public class Controller {
         if(BOOKS_PER_ROW != 1) {
             BOOKS_PER_ROW--;
             HORIZONTAL_SHIFT = (800 / BOOKS_PER_ROW);
-            prepareBooks();
+            prepareBooks(allBooks);
         }
     }
 
@@ -162,11 +219,14 @@ public class Controller {
     @FXML
     void clickHome(ActionEvent event) throws InterruptedException {
         showMarket();
-        prepareBooks();
+        prepareBooks(allBooks);
     }
 
     @FXML
     void clickLogout(ActionEvent event) {
+        currentUser = null;
+
+        showLogin();
     }
 
     @FXML
@@ -185,9 +245,17 @@ public class Controller {
     void clickViewUsers(ActionEvent event) {
     }
 
+    @FXML
+    void checkedManagerBox(ActionEvent event) {
+        if(isManagerCheckBox.isSelected()) {
+            secretCodeTextField.setVisible(true);
+        } else {
+            secretCodeTextField.setVisible(false);
+        }
+    }
 
-    private void prepareBooks() {
-        int numberOfBooks = 50;
+    private void prepareBooks(ArrayList<Book> allLibraryBooks) {
+        int numberOfBooks = allLibraryBooks.size();
         Pane root = new Pane();
         booksPane.setContent(root);
         String cssLayout =
@@ -234,21 +302,22 @@ public class Controller {
             container.setAlignment(Pos.CENTER);
             //==========================================================================
 
-            Label bookLabel = new Label("Book number" + i);
+            String bookName = allLibraryBooks.get(i).getTitle();
+            Label bookLabel = new Label(bookName);
             bookLabel.setFont(Font.font("Cambria", 23));
 
-            String Author = "Islam Gamal";
+            String Author = allLibraryBooks.get(i).getPubYear();
             HBox bookAuthor = new HBox();
             bookAuthor.setAlignment(Pos.CENTER);
-            Label bookAuthor1 = new Label("Author/s: ");
+            Label bookAuthor1 = new Label("pub year: ");
             Label bookAuthor2 = new Label(Author);
             bookAuthor1.setStyle("-fx-text-fill: grey ;");
             bookAuthor1.setFont(Font.font("Cambria", 14));
             bookAuthor2.setStyle("-fx-text-fill: brown ;") ;
-            bookAuthor2.setFont(Font.font("Cambria", 18));
+            bookAuthor2.setFont(Font.font("Cambria", 16));
             bookAuthor.getChildren().addAll(bookAuthor1, bookAuthor2);
 
-            int quantity = 5;
+            int quantity = allLibraryBooks.get(i).getQuantity();
             HBox count = new HBox();
             count.setAlignment(Pos.CENTER);
             Label count1 = new Label("Available in stock: ");
@@ -301,19 +370,24 @@ public class Controller {
                         cartButton.setText("Remove from cart");
                         cartButton.setStyle("-fx-background-color: RED;\n" +
                                 "-fx-text-fill: WHITE ;");
-                        //todo remove from cart logic
                         addedToCart = true;
+                        int index = Integer.valueOf(((Button)(event.getSource())).getId());
+                        int quantity = Integer.valueOf(currentCount[index].getText());
+                        database.addToCart(allLibraryBooks.get(index).getBookId(),quantity,currentUser.getUserId());
                     } else {
                         Button cartButton = ((Button) (event.getSource()));
                         cartButton.setText("Add to cart");
                         cartButton.setStyle("-fx-background-color: GREEN;\n" +
                                 "-fx-text-fill: WHITE ;");
                         addedToCart = false;
-                        //todo add to cart logic
+                        int index = Integer.valueOf(((Button)(event.getSource())).getId());
+                        int quantity = Integer.valueOf(currentCount[index].getText());
+                        database.removeFromCart(allLibraryBooks.get(index).getBookId(),quantity,currentUser.getUserId());
                     }
                 }
             });
-            int bookPrice = 5964;
+
+            float bookPrice = allLibraryBooks.get(i).getSellingPrice();
             HBox price = new HBox();
             price.setAlignment(Pos.CENTER);
             Label p1 = new Label("Price/book: LE ");
@@ -331,7 +405,9 @@ public class Controller {
         }
 
     }
-
+    private void showErrorLogIn() {
+        errorLoginLabel.setVisible(true);
+    }
     private void showLogin() {
         firstNameTextbox.setVisible(false);
         lastNameTextbox.setVisible(false);
@@ -388,7 +464,6 @@ public class Controller {
         searchTitleTextbox.setVisible(true);
     }
     private void showRegister() {
-        slogan.setVisible(false);
         firstNameTextbox.setVisible(true);
         lastNameTextbox.setVisible(true);
         rEmailTextbox.setVisible(true);
@@ -400,7 +475,9 @@ public class Controller {
         loginButton.setLayoutY(458);
         registerButton.setLayoutX(456);
         registerButton.setLayoutY(458);
+        isManagerCheckBox.setVisible(true);
 
+        slogan.setVisible(false);
         booksPane.setVisible(false);
         searchTitleTextbox.setVisible(false);
         searchCategoryTextbox.setVisible(false);
@@ -412,6 +489,12 @@ public class Controller {
         toolBar.setVisible(false);
         emailTextbox.setVisible(false);
         passwordTextbox.setVisible(false);
+    }
+    private void establishNewConncetion() {
+        database = new Model();
+        allBooks = new ArrayList<Book>();
+        currentUser = new User();
+        allBooks = database.getAllBooks();
     }
 
 }

@@ -124,5 +124,17 @@
         <Font name="Purisa" size="35.0" />
       </font>
     </Label>
+    <Label id="errorL" fx:id="errorLoginLabel" layoutX="317.0" layoutY="427.0" text="Incorrect Email or Password" textFill="RED" visible="false">
+      <font>
+        <Font size="18.0" fx:id="x4" />
+      </font>
+    </Label>
+    <CheckBox fx:id="isManagerCheckBox" font="$x4" layoutX="226.0" layoutY="208.0" mnemonicParsing="false" onAction="#checkedManagerBox" prefHeight="30.0" prefWidth="246.0" text="I'm a Manager" textFill="WHITE" visible="false" wrapText="false" />
+    <PasswordField fx:id="secretCodeTextField" layoutX="445.0" layoutY="209.0" onKeyReleased="#validateManagerCode" prefHeight="29.0" prefWidth="216.0" promptText="Enter Secret Code" visible="false" />
+    <ImageView id="validIcon" fx:id="validIconManager" fitHeight="32.0" fitWidth="32.0" layoutX="668.0" layoutY="209.0" pickOnBounds="true" preserveRatio="false" visible="false">
+      <image>
+        <Image url="@Resources/images/valid.png" />
+      </image>
+    </ImageView>
   </children>
 </Pane>
