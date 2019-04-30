@@ -1,3 +1,5 @@
+package Model;
+
 import Entites.Book;
 import Entites.CartElement;
 import Entites.Order;
@@ -8,8 +10,8 @@ import java.util.HashMap;
 
 public interface IModel {
     //todo file constants
-    boolean register();
-    User logIn();
+    boolean register(User user);
+    User logIn(String name, String password);
     boolean updateUser(User user);
     ArrayList<Book> getAllBooks();
     ArrayList<Book> searchForBook(HashMap<String,String> searchMap);

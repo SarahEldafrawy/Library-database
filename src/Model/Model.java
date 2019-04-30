@@ -1,3 +1,5 @@
+package Model;
+
 import Entites.Book;
 import Entites.CartElement;
 import Entites.Order;
@@ -8,7 +10,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
-
 public class Model implements IModel {
     private ConnectionHandler connectionHandler;
 
@@ -17,7 +18,7 @@ public class Model implements IModel {
         connectionHandler.startConnection();
     }
     @Override
-    public boolean register() {
+    public boolean register(User user) {
         try {
             ResultSet rs = connectionHandler.excuteQuery("Select * From BOOK");
 
@@ -26,11 +27,10 @@ public class Model implements IModel {
             System.out.println("SQLState: " + e.getSQLState());
             System.out.println("VendorError: " + e.getErrorCode());
         }
-        return false;
     }
 
     @Override
-    public User logIn() {
+    public User logIn(String name , String password) {
         return null;
     }
 
