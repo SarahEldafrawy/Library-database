@@ -1,3 +1,5 @@
+package Model;
+
 import Entites.Book;
 import Entites.CartElement;
 import Entites.Order;

@@ -1,3 +1,5 @@
+package Model;
+
 import Entites.Book;
 import Entites.CartElement;
 import Entites.Order;
@@ -5,7 +7,6 @@ import Entites.User;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-
 public class Model implements IModel {
     @Override
     public boolean register(User user) {
