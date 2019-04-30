@@ -1,0 +1,2 @@
+INSERT INTO book_store.USER (user_id, first_name, last_name, email_address, phone_number, shipping_address, password, promoted) VALUES (1, 'akrooom', 'moussaa', 'akrammousa@gmail.com', '0122345565', 'ai mkaan', 'testtest', 0);
+INSERT INTO book_store.USER (user_id, first_name, last_name, email_address, phone_number, shipping_address, password, promoted) VALUES (2, 'soloommm', 'gammaall', 'islam@test', '45454644', 'ai 7etaa ', 'testoo', 1);
