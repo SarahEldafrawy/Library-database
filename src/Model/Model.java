@@ -5,11 +5,28 @@ import Entites.CartElement;
 import Entites.Order;
 import Entites.User;
 
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 public class Model implements IModel {
+    private ConnectionHandler connectionHandler;
+
+    public Model() throws SQLException, ClassNotFoundException {
+        connectionHandler = new ConnectionHandler();
+        connectionHandler.startConnection();
+    }
     @Override
     public boolean register(User user) {
+        try {
+            ResultSet rs = connectionHandler.excuteQuery("Select * From BOOK");
+
+        } catch(SQLException e) {
+            System.out.println("SQLException: " + e.getMessage());
+            System.out.println("SQLState: " + e.getSQLState());
+            System.out.println("VendorError: " + e.getErrorCode());
+        }
         return false;
     }
 
@@ -87,4 +104,6 @@ public class Model implements IModel {
     public boolean confirmOrder(int OrderId) {
         return false;
     }
+
 }
+
