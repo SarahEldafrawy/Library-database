@@ -14,6 +14,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
 import Entites.*;
@@ -122,7 +123,13 @@ public class Controller {
     @FXML
     void loginClicked(MouseEvent event) {
         if(emailTextbox.isVisible()) {
-            establishNewConncetion();
+            try {
+                establishNewConncetion();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
+            }
             String email = emailTextbox.getText();
             String password = passwordTextbox.getText();
             currentUser = database.logIn(email, password);
@@ -140,7 +147,13 @@ public class Controller {
     @FXML
     void registerClicked(MouseEvent event) {
         if(rEmailTextbox.isVisible()) {
-            establishNewConncetion();
+            try {
+                establishNewConncetion();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
+            }
             String email = rEmailTextbox.getText();
             String password = rPasswordTextbox.getText();
             String telefon = telefonTextbox.getText();
@@ -490,7 +503,7 @@ public class Controller {
         emailTextbox.setVisible(false);
         passwordTextbox.setVisible(false);
     }
-    private void establishNewConncetion() {
+    private void establishNewConncetion() throws SQLException, ClassNotFoundException {
         database = new Model();
         allBooks = new ArrayList<Book>();
         currentUser = new User();
