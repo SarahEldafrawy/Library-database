@@ -1,0 +1,2 @@
+INSERT INTO book_store.PUBLISHER (publisher_id, name, phone, address) VALUES (1, 'akram hesham', '01224684689', 'ai mkan');
+INSERT INTO book_store.PUBLISHER (publisher_id, name, phone, address) VALUES (2, 'islam gamal', '010000000', 'ai 7eta');

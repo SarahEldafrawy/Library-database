@@ -1,0 +1,3 @@
+INSERT INTO book_store.BOOK (book_id, title, pub_year, selling_price, category, quantuty, publisher_id) VALUES (1, 'ktab gamed gdn', '2019-04-10', 20, 'Art', 100, 1);
+INSERT INTO book_store.BOOK (book_id, title, pub_year, selling_price, category, quantuty, publisher_id) VALUES (2, 'ktab rwsh', '2019-04-03', 50, 'Science', 200, 2);
+INSERT INTO book_store.BOOK (book_id, title, pub_year, selling_price, category, quantuty, publisher_id) VALUES (3, 'ktabb helww', null, 500, 'History', 500, 1);
