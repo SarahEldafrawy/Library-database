@@ -8,12 +8,12 @@ import java.util.HashMap;
 
 public class Model implements IModel {
     @Override
-    public boolean register() {
+    public boolean register(User user) {
         return false;
     }
 
     @Override
-    public User logIn() {
+    public User logIn(String name , String password) {
         return null;
     }
 
