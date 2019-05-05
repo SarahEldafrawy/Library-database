@@ -1,5 +1,7 @@
 package Model;
 
+import Entites.CartElement;
+
 import java.sql.*;
 
 public class ConnectionHandler {
@@ -16,9 +18,18 @@ public class ConnectionHandler {
         con.close();
     }
 
-    public ResultSet excuteQuery (String query) throws SQLException {
+    public ResultSet executeQuery(String query) throws SQLException {
         Statement stmt = con.createStatement();
         return stmt.executeQuery(query);
     }
 
+    public int executeUpdate(String query) throws SQLException {
+        Statement stmt = con.createStatement();
+        return stmt.executeUpdate(query);
+    }
+
+    public int executeInsert(String query) throws SQLException{
+        Statement stmt = con.createStatement();
+        return stmt.executeUpdate(query);
+    }
 }

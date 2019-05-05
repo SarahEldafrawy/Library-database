@@ -9,6 +9,16 @@ public class Book {
     int quantity;
     int publisherId;
 
+    public int getThreshold() {
+        return threshold;
+    }
+
+    public void setThreshold(int threshold) {
+        this.threshold = threshold;
+    }
+
+    int threshold ;
+
     public int getBookId() {
         return bookId;
     }
