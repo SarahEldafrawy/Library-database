@@ -115,8 +115,20 @@ public class SQLCommands {
     }
 
     public String searchForBooks(HashMap<String, String> searchMap) {
-        return null;
-        //todo handle keys names with front end
+        if(searchMap.isEmpty()) {
+            return null;
+        }
+        String query = "SELECT BOOK.book_id , BOOK.title , BOOK.pub_year," +
+                " Book.selling_price ,Book.category , BOOK.quantity , BOOK.publisher_id , BOOK.threshold " +
+                "FROM BOOK,PUBLISHER,AUTHOR ";
+                if(searchMap.containsKey("publisher_name")) {
+                    query+= "WHERE PUBLISHER.name = " + searchMap.get("publisher_name");
+                } else if(searchMap.containsKey("author_name")) {
+                    query+= " AND AUTHOR.name = "+ searchMap.get("author_name");
+                } else if (searchMap.containsKey("category")) {
+                    query+= " AND BOOK.category = "+ searchMap.get("author_name");
+                }
+        return query;
     }
 
     public String getBookById(int bookId) {
@@ -128,16 +140,26 @@ public class SQLCommands {
     public String getBookByTitle(String title) {
         String query = "SELECT * FROM BOOK WHERE BOOK.title = \" "
                 + title + "\"" ;
-        return null;
+        return query;
     }
 
     public String getBooksByPage(int pageNumber, int limit) {
-        //todo by page
-        return null;
+        String query = "SELECT * FROM BOOK LIMIT " + pageNumber*limit+ " , " +limit+"";
+        return query;
     }
 
-    public String getNumberOfPages(String key) {
+    public String getNumberOfPagesOfBooks(String key) {
         String query = "SELECT COUNT AS \"" + key + "\" FROM BOOK GROUP BY book_id";
+        return query;
+    }
+
+    public String getNumberOfPagesOfUsers(String key) {
+        String query = "SELECT COUNT AS \"" + key + "\" FROM USER GROUP BY user_id";
+        return query;
+    }
+
+    public String getUsersByPage(int pageNumber, int limit) {
+        String query = "SELECT * FROM USER LIMIT " + pageNumber*limit+ " , " +limit+"";
         return query;
     }
 }

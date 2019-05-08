@@ -4,8 +4,6 @@ import Entites.Book;
 import Entites.CartElement;
 import Entites.Order;
 import Entites.User;
-import com.sun.org.apache.bcel.internal.generic.ARRAYLENGTH;
-import com.sun.org.apache.xpath.internal.operations.Or;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -77,9 +75,13 @@ public class Model implements IModel {
 
     }
     @Override
-    public int getNumberOfPages(){
+    public int getNumberOfPagesOfBooks(){
         final String key = "count";
-        String query = sQlCommands.getNumberOfPages(key);
+        String query = sQlCommands.getNumberOfPagesOfBooks(key);
+        return getNumberOfPages(key, query);
+    }
+
+    private int getNumberOfPages(String key, String query) {
         int numberOfPages = 0;
         try {
             ResultSet resultSet = connectionHandler.executeQuery(query);
@@ -92,10 +94,22 @@ public class Model implements IModel {
         return numberOfPages;
     }
 
-    public ArrayList<Book> getPage(int pageNumber, int limit){
+    public ArrayList<Book> getBooksByPage(int pageNumber, int limit){
         String query = sQlCommands.getBooksByPage(pageNumber , limit);
         return getBooks(query);
     }
+
+    public int getNumberOfPagesOfUsers(){
+        final String key = "count";
+        String query = sQlCommands.getNumberOfPagesOfUsers(key);
+        return getNumberOfPages(key, query);
+    }
+
+    public ArrayList<Book> getUsersByPage(int pageNumber, int limit){
+        String query = sQlCommands.getUsersByPage(pageNumber , limit);
+        return getBooks(query);
+    }
+
 
     @Override
     public ArrayList<Book> searchForBooks(HashMap<String, String> searchMap) {

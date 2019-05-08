@@ -14,8 +14,8 @@ public interface IModel {
     User logIn(String name, String password);
     boolean updateUser(User user);
     ArrayList<Book> getStartBooks();
-    int getNumberOfPages();
-    ArrayList<Book> getPage(int pageNumber, int limit);
+    int getNumberOfPagesOfBooks();
+    ArrayList<Book> getBooksByPage(int pageNumber, int limit);
     ArrayList<Book> searchForBooks(HashMap<String,String> searchMap);
     boolean addToCart(int bookId, int quantity, int userId);
     boolean removeFromCart(int bookId, int userId);
@@ -23,6 +23,8 @@ public interface IModel {
     boolean checkout(int userId);
     Book getBookById(int bookId);
     Book getBookByTitle(String title);
+    int getNumberOfPagesOfUsers();
+    ArrayList<Book> getUsersByPage(int pageNumber, int limit);
 
     //manager functions
     ArrayList<User> getAllUsers();
