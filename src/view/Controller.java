@@ -467,7 +467,7 @@ public class Controller {
                         addedToCart = false;
                         int index = Integer.valueOf(((Button)(event.getSource())).getId());
                         int quantity = Integer.valueOf(currentCount[index].getText());
-                        database.removeFromCart(allLibraryBooks.get(index).getBookId(),quantity,currentUser.getUserId());
+                        database.removeFromCart(allLibraryBooks.get(index).getBookId(),currentUser.getUserId());
                     }
                 }
             });
@@ -580,7 +580,7 @@ public class Controller {
         database = new Model();
         allBooks = new ArrayList<Book>();
         currentUser = new User();
-        allBooks = database.getAllBooks();
+        allBooks = database.getPage(0,50);
     }
 
 }
