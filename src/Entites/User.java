@@ -1,6 +1,15 @@
 package Entites;
 
 public class User {
+    public final String USERID = "user_id";
+    public final String FIRSTNAME = "first_name";
+    public final String LASTNAME = "last_name";
+    public final String EMAILADDRESS = "email_address";
+    public final String PHONENUMBER = "phone_number";
+    public final String SHIPPINGADDRESS = "shipping_address";
+    public final String PASSWORD = "password";
+    public final String PROMOTED = "promoted";
+
     int userId;
     String firstName;
     String lastName;

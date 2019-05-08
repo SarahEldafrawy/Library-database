@@ -13,12 +13,16 @@ public interface IModel {
     boolean register(User user);
     User logIn(String name, String password);
     boolean updateUser(User user);
-    ArrayList<Book> getAllBooks();
-    ArrayList<Book> searchForBook(HashMap<String,String> searchMap);
+    ArrayList<Book> getStartBooks();
+    int getNumberOfPages();
+    ArrayList<Book> getPage(int pageNumber, int limit);
+    ArrayList<Book> searchForBooks(HashMap<String,String> searchMap);
     boolean addToCart(int bookId, int quantity, int userId);
-    boolean removeFromCart(int bookId, int quantity, int userId);
+    boolean removeFromCart(int bookId, int userId);
     ArrayList<CartElement> getCart(int userId);
     boolean checkout(int userId);
+    Book getBookById(int bookId);
+    Book getBookByTitle(String title);
 
     //manager functions
     ArrayList<User> getAllUsers();

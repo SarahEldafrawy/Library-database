@@ -1,6 +1,15 @@
 package Entites;
 
 public class Book {
+    public final String BOOKID = "book_id";
+    public final String TITLE = "title";
+    public final String PUBYEAR = "pub_year";
+    public final String SELLINGPRICE = "selling_price";
+    public final String CATEGORY = "book_id";
+    public final String QUANTITY = "book_id";
+    public final String PUBLISHERID = "publisher_id";
+    public final String THRESHOLD = "threshold";
+
     int bookId;
     String title;
     String pubYear;
@@ -8,6 +17,17 @@ public class Book {
     String category;
     int quantity;
     int publisherId;
+    int threshold ;
+
+    public int getThreshold() {
+        return threshold;
+    }
+
+    public void setThreshold(int threshold) {
+        this.threshold = threshold;
+    }
+
+
 
     public int getBookId() {
         return bookId;
