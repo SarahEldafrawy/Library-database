@@ -507,7 +507,7 @@ public class Controller {
         database = new Model();
         allBooks = new ArrayList<Book>();
         currentUser = new User();
-        allBooks = database.getAllBooks();
+        allBooks = database.getStartBooks();
     }
 
 }
