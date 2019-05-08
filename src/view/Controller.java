@@ -326,16 +326,14 @@ public class Controller {
     @FXML
     void getNextPage(ActionEvent event) {
         showMarket();
-        //todo remove comments
-        //prepareBooks(database.getPage(pageNum++, 50));
+        prepareBooks(database.getBooksByPage(pageNum++, 50));
     }
     @FXML
     void getPrevPage(ActionEvent event) {
         showMarket();
         if (pageNum != 0) {
-            //prepareBooks(database.getPage(pageNum--, 50));
+            prepareBooks(database.getBooksByPage(pageNum--, 50));
         }
-        //todo remove comments
     }
 
     @FXML
@@ -855,6 +853,9 @@ public class Controller {
     }
     private void showMarket() {
         errorLoginLabel.setVisible(false);
+        isManagerCheckBox.setVisible(false);
+        validIconManager.setVisible(false);
+        secretCodeTextField.setVisible(false);
         checkoutButton.setVisible(false);
         firstNameTextbox.setVisible(false);
         lastNameTextbox.setVisible(false);
@@ -920,21 +921,21 @@ public class Controller {
         passwordTextbox.setVisible(false);
     }
     private void establishNewConncetion() throws SQLException, ClassNotFoundException {
-        //database = new Model();
+        database = new Model();
         allBooks = new ArrayList<Book>();
         currentUser = new User();
-        //allBooks = database.getPage(0,50);
+        allBooks = database.getBooksByPage(pageNum,50);
         cartBooks = new ArrayList<Book>();
 
-        currentUser.setFirstName("Islam");
+        /*currentUser.setFirstName("Islam");
         currentUser.setLastName("Gamal");
         currentUser.setEmailAddress("islamgamal77@gmail.com");
         currentUser.setPromoted(true);
         currentUser.setShippingAddress("Alzorkani ST, Miami, Alexandria");
         currentUser.setPhoneNumber("(+20) 109-144-8249");
-        currentUser.setPassword("mypassword");
+        currentUser.setPassword("mypassword");*/
 
-        for(int i = 0; i < 20; i++) {
+        /*for(int i = 0; i < 20; i++) {
             Book book = new Book();
             book.setBookId(i);
             book.setCategory("Science");
@@ -944,6 +945,6 @@ public class Controller {
             book.setTitle("Book Number " + i);
             book.setQuantity((int)(Math. random() * 50 + 1));
             allBooks.add(book);
-        }
+        }*/
     }
 }

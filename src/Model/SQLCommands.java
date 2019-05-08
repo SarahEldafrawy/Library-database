@@ -16,7 +16,7 @@ public class SQLCommands {
 
     }
     public String logInUser(String email, String password){
-        String query = "SELECT * FROM USER WHERE USER.user_email = \""
+        String query = "SELECT * FROM USER WHERE USER.email_address = \""
                 + email + "\" AND USER.password = \"" + password + "\"";
         return query;
     }
@@ -104,7 +104,8 @@ public class SQLCommands {
 
     public String registerUser(User user) {
         String query = "INSERT INTO USER VALUES "
-                +"(\"" + user.getFirstName() + "\","
+                +"(user_id,"
+                +"\"" + user.getFirstName() + "\","
                 + "\"" +  user.getLastName() +  "\","
                 + "\"" +  user.getEmailAddress() + "\","
                 + "\"" + user.getPhoneNumber() + "\","
