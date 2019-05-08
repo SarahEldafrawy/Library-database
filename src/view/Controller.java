@@ -5,20 +5,28 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
 import Entites.*;
 import Model.*;
+import javafx.scene.text.FontWeight;
+import javafx.stage.Stage;
 
 public class Controller {
 
@@ -132,8 +140,11 @@ public class Controller {
             }
             String email = emailTextbox.getText();
             String password = passwordTextbox.getText();
-            currentUser = database.logIn(email, password);
-            if(currentUser == null && !(email.equals("admin") && password.equals("admin"))) {
+            if(!email.equals("admin") & !email.equals("")) {
+                currentUser = database.logIn(email, password);
+            }
+            if(currentUser == null && !(email.equals("admin") && password.equals("admin")) &&
+                    !(email.equals("") && password.equals(""))) {
                 showErrorLogIn();
             } else {
                 showMarket();
@@ -248,6 +259,67 @@ public class Controller {
 
     @FXML
     void clickProfile(ActionEvent event) {
+        Pane container = new Pane();
+        container.setMinWidth(884.0);
+        container.setMinHeight(595.75);
+        VBox secondaryLayout = new VBox();
+        secondaryLayout.setMinWidth(884.0);
+        secondaryLayout.setMinHeight(595.75);
+        secondaryLayout.setAlignment(Pos.CENTER);
+        try {
+            Image image = new Image(new FileInputStream(
+                    this.getClass().getProtectionDomain().getCodeSource().getLocation().getPath()
+                            + "../../../src/view/Resources/images/libraryy.jpg"));
+            ImageView wallpaper = new ImageView(image);
+            wallpaper.setFitHeight(595.75);
+            wallpaper.setFitWidth(884);
+            wallpaper.setX(0);
+            wallpaper.setY(0);
+            container.getChildren().add(wallpaper);
+
+            Image image2 = new Image(new FileInputStream(
+                    this.getClass().getProtectionDomain().getCodeSource().getLocation().getPath()
+                            + "../../../src/view/Resources/images/nophoto.gif"));
+            ImageView profilepic = new ImageView(image2);
+            profilepic.setFitHeight(220);
+            profilepic.setFitWidth(200);
+            secondaryLayout.getChildren().add(profilepic);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        //Label secondLabel = new Label(currentUser.getFirstName() + " " + currentUser.getLastName());
+        Label name = new Label("Islam Gamal");
+        Label empty = new Label("");
+        Label verification = new Label("Verified");
+        Label email = new Label("islamgamal77@gmail.com");
+        Label phone = new Label("+(20)109-144-8249");
+        Label address = new Label("Zorkani St, Miami, Alexandria");
+
+        Button button = new Button("Edit my profile info");
+
+        name.setFont(new Font("Cambria", 45));
+        name.setTextFill(Color.BLACK);
+        verification.setFont(Font.font("Cambria",18));
+        verification.setTextFill(Color.GREEN);
+        email.setFont(new Font("Cambria", 27));
+        email.setTextFill(Color.BLACK);
+        phone.setFont(new Font("Cambria", 27));
+        phone.setTextFill(Color.BLACK);
+        address.setFont(new Font("Cambria", 27));
+        address.setTextFill(Color.BLACK);
+        secondaryLayout.getChildren().addAll(empty,button, name, verification, email, phone, address);
+        container.getChildren().add(secondaryLayout);
+        Scene secondScene = new Scene(container, 884.0, 595.75);
+        // New window (Stage)
+        Stage newWindow = new Stage();
+        newWindow.setTitle("Profile");
+        newWindow.setScene(secondScene);
+
+        // Set position of second window, related to primary window.
+        newWindow.setX(382);
+        newWindow.setY(109);
+
+        newWindow.show();
     }
 
     @FXML
@@ -395,7 +467,7 @@ public class Controller {
                         addedToCart = false;
                         int index = Integer.valueOf(((Button)(event.getSource())).getId());
                         int quantity = Integer.valueOf(currentCount[index].getText());
-                        database.removeFromCart(allLibraryBooks.get(index).getBookId(),quantity,currentUser.getUserId());
+                        database.removeFromCart(allLibraryBooks.get(index).getBookId(),currentUser.getUserId());
                     }
                 }
             });
@@ -452,6 +524,7 @@ public class Controller {
         passwordTextbox.setVisible(true);
     }
     private void showMarket() {
+        errorLoginLabel.setVisible(false);
         firstNameTextbox.setVisible(false);
         lastNameTextbox.setVisible(false);
         rEmailTextbox.setVisible(false);
@@ -507,7 +580,7 @@ public class Controller {
         database = new Model();
         allBooks = new ArrayList<Book>();
         currentUser = new User();
-        allBooks = database.getStartBooks();
+        allBooks = database.getPage(0,50);
     }
 
 }
