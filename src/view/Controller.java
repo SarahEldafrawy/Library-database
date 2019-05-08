@@ -26,12 +26,14 @@ import java.util.ResourceBundle;
 import Entites.*;
 import Model.*;
 import javafx.scene.text.FontWeight;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 public class Controller {
 
     Model database;
     ArrayList<Book> allBooks;
+    ArrayList<Book> cartBooks;
     User currentUser;
 
 
@@ -39,6 +41,7 @@ public class Controller {
     Button addToCartButton[];
     int HORIZONTAL_SHIFT = 800/3;
     boolean addedToCart = false;
+    boolean isNowCart = false;
     int VERTICAL_SHIFT = 210;
     int MARGIN = 15;
     int BOOKS_PER_ROW = 3;
@@ -94,6 +97,21 @@ public class Controller {
 
     @FXML
     Label errorLoginLabel;
+
+    @FXML
+    private Button addBookButtonToolbar;
+
+    @FXML
+    private Button viewOrdersButtonToolbar;
+
+    @FXML
+    private Button viewReportButtonToolbar;
+
+    @FXML
+    private Button viewUsersButtonToolbar;
+
+    @FXML
+    private Button checkoutButton;
 
     @FXML
     private Label slogan;
@@ -238,10 +256,30 @@ public class Controller {
 
     @FXML
     void clickCart(ActionEvent event) {
+        isNowCart = true;
+        prepareBooks(cartBooks);
+        searchAuthorTextbox.setVisible(false);
+        searchButton.setVisible(false);
+        searchCategoryTextbox.setVisible(false);
+        searchTitleTextbox.setVisible(false);
+
+        checkoutButton.setVisible(true);
+    }
+
+    @FXML
+    void backToShop(ActionEvent event) {
+        showMarket();
+        isNowCart = false;
+    }
+
+    @FXML
+    void proceedToCheckout(ActionEvent event) {
+
     }
 
     @FXML
     void clickHome(ActionEvent event) throws InterruptedException {
+        isNowCart = false;
         showMarket();
         prepareBooks(allBooks);
     }
@@ -249,7 +287,6 @@ public class Controller {
     @FXML
     void clickLogout(ActionEvent event) {
         currentUser = null;
-
         showLogin();
     }
 
@@ -258,8 +295,71 @@ public class Controller {
     }
 
     @FXML
+    void addBook(ActionEvent event) {
+        Pane container = new Pane();
+        Scene secondScene = new Scene(container, 442.0, 296);
+        secondScene.getStylesheets().add("style.css");
+        Stage newWindow = new Stage();
+        newWindow.setTitle("edit profile");
+        newWindow.setScene(secondScene);
+
+        Image image = null;
+        try {
+            image = new Image(new FileInputStream(
+                    this.getClass().getProtectionDomain().getCodeSource().getLocation().getPath()
+                            + "../../../src/view/Resources/images/libraryy.jpg"));
+        } catch (FileNotFoundException e1) {
+            e1.printStackTrace();
+        }
+        ImageView wallpaper = new ImageView(image);
+        wallpaper.setFitHeight(297.5);
+        wallpaper.setFitWidth(442.0);
+        wallpaper.setX(0);
+        wallpaper.setY(0);
+        container.getChildren().add(wallpaper);
+        VBox vbx = new VBox();
+        vbx.setMinWidth(442);
+        vbx.setMinHeight(297.5);
+        vbx.setAlignment(Pos.CENTER);
+        TextField title = new TextField();
+        TextField authors = new TextField();
+        TextField price = new TextField();
+        TextField count = new TextField();
+        TextField dateOfPublishing = new TextField();
+        title.setPromptText("Enter the title of the book");
+        title.setFocusTraversable(false);
+        authors.setPromptText("Enter author(s) of the book");
+        authors.setFocusTraversable(false);
+        price.setPromptText("How much is that book?");
+        price.setFocusTraversable(false);
+        count.setPromptText("How many books do we have?");
+        count.setFocusTraversable(false);
+        dateOfPublishing.setPromptText("Date of publishing");
+        dateOfPublishing.setFocusTraversable(false);
+        Button done = new Button("Done");
+        done.setFocusTraversable(true);
+        done.getStyleClass().add("mybutton");
+        done.setTextFill(Color.WHITE);
+        done.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                //todo save new book data
+                ((Node)event.getSource()).getScene().getWindow().hide();
+            }
+        });
+        vbx.getChildren().addAll(title, authors, price, count, dateOfPublishing, done);
+        container.getChildren().add(vbx);
+        newWindow.setX(582);
+        newWindow.setY(259);
+        newWindow.show();
+    }
+
+    @FXML
     void clickProfile(ActionEvent event) {
         Pane container = new Pane();
+        Scene secondScene = new Scene(container, 884.0, 595.75);
+        System.out.println();
+        secondScene.getStylesheets().add("style.css");
         container.setMinWidth(884.0);
         container.setMinHeight(595.75);
         VBox secondaryLayout = new VBox();
@@ -289,17 +389,139 @@ public class Controller {
         }
         //Label secondLabel = new Label(currentUser.getFirstName() + " " + currentUser.getLastName());
         Label name = new Label("Islam Gamal");
-        Label empty = new Label("");
         Label verification = new Label("Verified");
         Label email = new Label("islamgamal77@gmail.com");
         Label phone = new Label("+(20)109-144-8249");
         Label address = new Label("Zorkani St, Miami, Alexandria");
 
         Button button = new Button("Edit my profile info");
+        Button buttonBack = new Button("Back");
+        buttonBack.setFocusTraversable(true);
+        button.setOnAction(new EventHandler<ActionEvent>() {
+            @Override public void handle(ActionEvent e) {
+                Pane container = new Pane();
+                Scene secondScene = new Scene(container, 442.0, 296);
+                secondScene.getStylesheets().add("style.css");
+                Stage newWindow = new Stage();
+                newWindow.setTitle("edit profile");
+                newWindow.setScene(secondScene);
+
+                Image image = null;
+                try {
+                    image = new Image(new FileInputStream(
+                            this.getClass().getProtectionDomain().getCodeSource().getLocation().getPath()
+                                    + "../../../src/view/Resources/images/libraryy.jpg"));
+                } catch (FileNotFoundException e1) {
+                    e1.printStackTrace();
+                }
+                ImageView wallpaper = new ImageView(image);
+                wallpaper.setFitHeight(297.5);
+                wallpaper.setFitWidth(442.0);
+                wallpaper.setX(0);
+                wallpaper.setY(0);
+                container.getChildren().add(wallpaper);
+                VBox vbx = new VBox();
+                vbx.setMinWidth(442);
+                vbx.setMinHeight(297.5);
+                vbx.setAlignment(Pos.CENTER);
+                TextField email = new TextField(currentUser.getEmailAddress());
+                TextField address = new TextField(currentUser.getEmailAddress());
+                TextField phone = new TextField(currentUser.getPhoneNumber());
+                TextField name = new TextField(currentUser.getFirstName()+ " " + currentUser.getLastName());
+                Button chngpwd = new Button("Change Password");
+                chngpwd.setFocusTraversable(true);
+                chngpwd.getStyleClass().add("mybutton");
+                chngpwd.setTextFill(Color.WHITE);
+                chngpwd.setOnAction(new EventHandler<ActionEvent>() {
+                    @Override
+                    public void handle(ActionEvent e) {
+                        Pane container = new Pane();
+                        Scene secondScene = new Scene(container, 442.0, 296);
+                        secondScene.getStylesheets().add("style.css");
+                        Stage newWindow = new Stage();
+                        newWindow.setTitle("edit password");
+                        newWindow.setScene(secondScene);
+
+                        Image image = null;
+                        try {
+                            image = new Image(new FileInputStream(
+                                    this.getClass().getProtectionDomain().getCodeSource().getLocation().getPath()
+                                            + "../../../src/view/Resources/images/libraryy.jpg"));
+                        } catch (FileNotFoundException e1) {
+                            e1.printStackTrace();
+                        }
+                        ImageView wallpaper = new ImageView(image);
+                        wallpaper.setFitHeight(297.5);
+                        wallpaper.setFitWidth(442.0);
+                        wallpaper.setX(0);
+                        wallpaper.setY(0);
+                        container.getChildren().add(wallpaper);
+                        VBox vbx = new VBox();
+                        vbx.setMinWidth(442);
+                        vbx.setMinHeight(297.5);
+                        vbx.setAlignment(Pos.CENTER);
+                        TextField oldpassword = new TextField();
+                        TextField newpassword = new TextField();
+                        TextField confirmpasswrd = new TextField();
+                        oldpassword.setFocusTraversable(false);
+                        newpassword.setFocusTraversable(false);
+                        confirmpasswrd.setFocusTraversable(false);
+                        oldpassword.setPromptText("Enter your old password");
+                        newpassword.setPromptText("Enter your new password");
+                        confirmpasswrd.setPromptText("Confirm your new password");
+                        Button chngpwd = new Button("Done");
+                        chngpwd.setFocusTraversable(true);
+                        chngpwd.getStyleClass().add("mybutton");
+                        chngpwd.setTextFill(Color.WHITE);
+                        chngpwd.setOnAction(new EventHandler<ActionEvent>() {
+                            @Override
+                            public void handle(ActionEvent e) {
+                               //todo change password
+                                ((Node)e.getSource()).getScene().getWindow().hide();
+                            }
+                        });
+                        vbx.getChildren().addAll(oldpassword, newpassword, confirmpasswrd, chngpwd);
+                        container.getChildren().add(vbx);
+                        newWindow.setX(582);
+                        newWindow.setY(259);
+                        newWindow.show();
+                    }
+                });
+                Button done = new Button("Done");
+                done.getStyleClass().add("mybutton");
+                done.setTextFill(Color.WHITE);
+                done.setOnAction(new EventHandler<ActionEvent>() {
+                    @Override
+                    public void handle(ActionEvent event) {
+                        //todo save new profile data
+                        ((Node)event.getSource()).getScene().getWindow().hide();
+                    }
+                });
+                vbx.getChildren().addAll(name, email, phone, address, chngpwd, done);
+                container.getChildren().add(vbx);
+                newWindow.setX(582);
+                newWindow.setY(259);
+                newWindow.show();
+            }
+        });
+        buttonBack.setOnAction((new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                ((Node)event.getSource()).getScene().getWindow().hide();
+            }
+        }));
+        buttonBack.getStyleClass().add("mybutton");
+        buttonBack.setTextFill(Color.WHITE);
+        button.getStyleClass().add("mybutton");
+        button.setTextFill(Color.WHITE);
+
+        Label empty = new Label("");
+        Label empty1 = new Label("");
+        Label empty2 = new Label("");
 
         name.setFont(new Font("Cambria", 45));
-        name.setTextFill(Color.BLACK);
-        verification.setFont(Font.font("Cambria",18));
+        name.setTextFill(Color.DARKRED);
+        verification.setFont(Font.font("Cambria",25));
         verification.setTextFill(Color.GREEN);
         email.setFont(new Font("Cambria", 27));
         email.setTextFill(Color.BLACK);
@@ -307,9 +529,9 @@ public class Controller {
         phone.setTextFill(Color.BLACK);
         address.setFont(new Font("Cambria", 27));
         address.setTextFill(Color.BLACK);
-        secondaryLayout.getChildren().addAll(empty,button, name, verification, email, phone, address);
+
+        secondaryLayout.getChildren().addAll(empty, empty1, button, empty2, name, verification, email, phone, address, buttonBack);
         container.getChildren().add(secondaryLayout);
-        Scene secondScene = new Scene(container, 884.0, 595.75);
         // New window (Stage)
         Stage newWindow = new Stage();
         newWindow.setTitle("Profile");
@@ -340,6 +562,7 @@ public class Controller {
     }
 
     private void prepareBooks(ArrayList<Book> allLibraryBooks) {
+        addedToCart = false;
         int numberOfBooks = allLibraryBooks.size();
         Pane root = new Pane();
         booksPane.setContent(root);
@@ -442,32 +665,41 @@ public class Controller {
             });
 
             counter.getChildren().addAll(decrement,currentCount[i], increment);
-
             addToCartButton[i] = new Button("Add to cart");
             addToCartButton[i].setId(String.valueOf(i));
             addToCartButton[i].setStyle("-fx-background-color: GREEN;\n" +
                     "-fx-text-fill: WHITE ;");
+            if(isNowCart) {
+                addToCartButton[i].setText("Remove from cart");
+                addToCartButton[i].setStyle("-fx-background-color: RED;\n" +
+                        "-fx-text-fill: WHITE ;");
+
+            }
             addToCartButton[i].setOnAction(new EventHandler<ActionEvent>() {
                 @Override
                 public void handle(ActionEvent event) {
-                    if(!addedToCart) {
+                    if(((Button) (event.getSource())).getText().equals("Add to cart")) {
                         Button cartButton = ((Button) (event.getSource()));
                         cartButton.setText("Remove from cart");
                         cartButton.setStyle("-fx-background-color: RED;\n" +
                                 "-fx-text-fill: WHITE ;");
-                        addedToCart = true;
                         int index = Integer.valueOf(((Button)(event.getSource())).getId());
                         int quantity = Integer.valueOf(currentCount[index].getText());
-                        database.addToCart(allLibraryBooks.get(index).getBookId(),quantity,currentUser.getUserId());
+                        //todo uncomment
+//                        database.addToCart(allLibraryBooks.get(index).getBookId(),quantity,currentUser.getUserId());
+                        cartBooks.add(allLibraryBooks.get(index));
                     } else {
                         Button cartButton = ((Button) (event.getSource()));
                         cartButton.setText("Add to cart");
                         cartButton.setStyle("-fx-background-color: GREEN;\n" +
                                 "-fx-text-fill: WHITE ;");
-                        addedToCart = false;
                         int index = Integer.valueOf(((Button)(event.getSource())).getId());
                         int quantity = Integer.valueOf(currentCount[index].getText());
-                        database.removeFromCart(allLibraryBooks.get(index).getBookId(),currentUser.getUserId());
+//                        database.removeFromCart(allLibraryBooks.get(index).getBookId(),currentUser.getUserId());
+                        cartBooks.remove(allLibraryBooks.get(index));
+                        if(isNowCart) {
+                            prepareBooks(cartBooks);
+                        }
                     }
                 }
             });
@@ -482,18 +714,16 @@ public class Controller {
             p2.setFont(Font.font("Cambria", 18));
             p2.setStyle("-fx-text-fill: GREEN ;");
             price.getChildren().addAll(p1, p2);
-
             Label newLine = new Label("");
-
             container.getChildren().addAll(bookLabel, bookAuthor, count, counter, price, addToCartButton[i], newLine);
             root.getChildren().add(container);
         }
-
     }
     private void showErrorLogIn() {
         errorLoginLabel.setVisible(true);
     }
     private void showLogin() {
+        toolBar.setVisible(false);
         firstNameTextbox.setVisible(false);
         lastNameTextbox.setVisible(false);
         rEmailTextbox.setVisible(false);
@@ -525,6 +755,7 @@ public class Controller {
     }
     private void showMarket() {
         errorLoginLabel.setVisible(false);
+        checkoutButton.setVisible(false);
         firstNameTextbox.setVisible(false);
         lastNameTextbox.setVisible(false);
         rEmailTextbox.setVisible(false);
@@ -543,6 +774,12 @@ public class Controller {
         buttondecreaseBPP.setVisible(true);
         buttonIncreaseBPP.setVisible(true);
         toolBar.setVisible(true);
+        if(currentUser!= null && currentUser.isPromoted()) {
+            addBookButtonToolbar.setVisible(true);
+            viewOrdersButtonToolbar.setVisible(true);
+            viewReportButtonToolbar.setVisible(true);
+            viewUsersButtonToolbar.setVisible(true);
+        }
         booksPane.setVisible(true);
         searchAuthorTextbox.setVisible(true);
         searchButton.setVisible(true);
@@ -577,10 +814,30 @@ public class Controller {
         passwordTextbox.setVisible(false);
     }
     private void establishNewConncetion() throws SQLException, ClassNotFoundException {
-        database = new Model();
+        //database = new Model();
         allBooks = new ArrayList<Book>();
         currentUser = new User();
-        allBooks = database.getPage(0,50);
-    }
+        //allBooks = database.getPage(0,50);
+        cartBooks = new ArrayList<Book>();
 
+        currentUser.setFirstName("Islam");
+        currentUser.setLastName("Gamal");
+        currentUser.setEmailAddress("islamgamal77@gmail.com");
+        currentUser.setPromoted(true);
+        currentUser.setShippingAddress("Alzorkani ST, Miami, Alexandria");
+        currentUser.setPhoneNumber("(+20) 109-144-8249");
+        currentUser.setPassword("mypassword");
+
+        for(int i = 0; i < 20; i++) {
+            Book book = new Book();
+            book.setBookId(i);
+            book.setCategory("Science");
+            book.setPublisherId(5);
+            book.setPubYear("23 July 1997");
+            book.setSellingPrice((int)(Math. random() * 2000 + 1));
+            book.setTitle("Book Number " + i);
+            book.setQuantity((int)(Math. random() * 50 + 1));
+            allBooks.add(book);
+        }
+    }
 }

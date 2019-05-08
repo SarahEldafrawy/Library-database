@@ -65,7 +65,7 @@
     </Button>
     <ToolBar fx:id="toolBar" layoutX="-2.0" layoutY="0.0" prefWidth="883.0" style="&#10;-fx-background-color : #613826" visible="false">
       <items>
-        <Button mnemonicParsing="false" onAction="#clickHome" style="&#10;" styleClass="mybutton" text="Home" textFill="WHITE">
+        <Button mnemonicParsing="false" onAction="#clickHome" prefWidth="103.0" style="&#10;" styleClass="mybutton" text="Home" textFill="WHITE">
           <font>
             <Font name="Ubuntu" size="17.0" fx:id="x2" />
           </font>
@@ -73,32 +73,37 @@
             <URL value="@Resources/styles/style.css" />
           </stylesheets>
         </Button>
-        <Button font="$x2" mnemonicParsing="false" onAction="#clickProfile" style="&#10;" styleClass="mybutton" text="Profile" textFill="WHITE">
+        <Button font="$x2" mnemonicParsing="false" onAction="#clickProfile" prefWidth="103.0" style="&#10;" styleClass="mybutton" text="Profile" textFill="WHITE">
           <stylesheets>
             <URL value="@Resources/styles/style.css" />
           </stylesheets>
         </Button>
-        <Button font="$x2" mnemonicParsing="false" onAction="#clickCart" style="&#10;" styleClass="mybutton" text="Cart" textAlignment="LEFT" textFill="WHITE">
+        <Button font="$x2" mnemonicParsing="false" onAction="#clickCart" prefWidth="103.0" style="&#10;" styleClass="mybutton" text="Cart" textAlignment="LEFT" textFill="WHITE">
+          <stylesheets>
+            <URL value="@Resources/styles/style.css" />
+          </stylesheets>
+        </Button>
+        <Button id="clickViewUsers" fx:id="viewUsersButtonToolbar" font="$x2" mnemonicParsing="false" onAction="#clickViewUsers" prefWidth="112.0" style="&#10;" styleClass="mybutton" text="All Users" textFill="WHITE" visible="false">
+          <stylesheets>
+            <URL value="@Resources/styles/style.css" />
+          </stylesheets>
+        </Button>
+        <Button id="clickViewOrders" fx:id="viewOrdersButtonToolbar" font="$x2" mnemonicParsing="false" onAction="#clickViewOrders" prefWidth="103.0" style="&#10;" styleClass="mybutton" text="Orders" textFill="WHITE" visible="false">
+          <stylesheets>
+            <URL value="@Resources/styles/style.css" />
+          </stylesheets>
+        </Button>
+        <Button id="" fx:id="viewReportButtonToolbar" font="$x2" mnemonicParsing="false" prefWidth="112.0" style="&#10;" styleClass="mybutton" text="Reports" textFill="WHITE" visible="false">
+          <stylesheets>
+            <URL value="@Resources/styles/style.css" />
+          </stylesheets>
+        </Button>
+        <Button id="" fx:id="addBookButtonToolbar" font="$x2" mnemonicParsing="false" onAction="#addBook" style="&#10;" styleClass="mybutton" text="Add book" textFill="WHITE" visible="false">
           <stylesheets>
             <URL value="@Resources/styles/style.css" />
           </stylesheets>
         </Button>
         <Button id="clickLogout" font="$x2" mnemonicParsing="false" onAction="#clickLogout" style="&#10;" styleClass="mybutton" text="Log out" textFill="WHITE">
-          <stylesheets>
-            <URL value="@Resources/styles/style.css" />
-          </stylesheets>
-        </Button>
-        <Button id="clickViewUsers" font="$x2" mnemonicParsing="false" onAction="#clickViewUsers" style="&#10;" styleClass="mybutton" text="view users" textFill="WHITE">
-          <stylesheets>
-            <URL value="@Resources/styles/style.css" />
-          </stylesheets>
-        </Button>
-        <Button id="clickViewOrders" font="$x2" mnemonicParsing="false" onAction="#clickViewOrders" style="&#10;" styleClass="mybutton" text="view orders" textFill="WHITE">
-          <stylesheets>
-            <URL value="@Resources/styles/style.css" />
-          </stylesheets>
-        </Button>
-        <Button id="" font="$x2" mnemonicParsing="false" onAction="#clickPlaceOrder" style="&#10;" styleClass="mybutton" text="place order" textFill="WHITE">
           <stylesheets>
             <URL value="@Resources/styles/style.css" />
           </stylesheets>
@@ -136,5 +141,10 @@
         <Image url="@Resources/images/valid.png" />
       </image>
     </ImageView>
+    <Button id="loginButton" fx:id="checkoutButton" font="$x1" layoutX="213.0" layoutY="504.0" minHeight="28.1328125" mnemonicParsing="false" onAction="#proceedToCheckout" onMouseClicked="#loginClicked" prefHeight="42.1328125" prefWidth="436.0" style="" styleClass="mybutton, " text="Proceed To Checkout" textFill="WHITE" visible="false">
+      <stylesheets>
+        <URL value="@Resources/styles/style.css" />
+      </stylesheets>
+    </Button>
   </children>
 </Pane>
