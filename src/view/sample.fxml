@@ -123,7 +123,7 @@
         <URL value="@Resources/styles/style.css" />
       </stylesheets>
     </Button>
-    <Label fx:id="labelInfo" layoutX="736.0" layoutY="557.0" text="Adjust Books per Page" visible="false" />
+    <Label fx:id="labelInfo" layoutX="736.0" layoutY="557.0" text="" visible="false" />
     <Label fx:id="slogan" layoutX="63.0" layoutY="486.0" text="How About A Date With A Good Book?" textFill="BROWN">
       <font>
         <Font name="Purisa" size="35.0" />
@@ -141,7 +141,25 @@
         <Image url="@Resources/images/valid.png" />
       </image>
     </ImageView>
-    <Button id="loginButton" fx:id="checkoutButton" font="$x1" layoutX="213.0" layoutY="504.0" minHeight="28.1328125" mnemonicParsing="false" onAction="#proceedToCheckout" onMouseClicked="#loginClicked" prefHeight="42.1328125" prefWidth="436.0" style="" styleClass="mybutton, " text="Proceed To Checkout" textFill="WHITE" visible="false">
+    <Button id="loginButton" fx:id="checkoutButton" font="$x1" layoutX="213.0" layoutY="504.0" minHeight="28.1328125" mnemonicParsing="false" onAction="#proceedToCheckout" prefHeight="42.1328125" prefWidth="436.0" style="" styleClass="mybutton, " text="Proceed To Checkout" textFill="WHITE" visible="false">
+      <stylesheets>
+        <URL value="@Resources/styles/style.css" />
+      </stylesheets>
+    </Button>
+    <Button id="buttondecreaseBPP" fx:id="prevPageButton" font="$x3" layoutX="772.0" layoutY="556.0" minWidth="29.0" mnemonicParsing="false" onAction="#getPrevPage" prefWidth="37.0" styleClass="mybutton" text="&lt;" textFill="WHITE" visible="false">
+      <stylesheets>
+        <URL value="@Resources/styles/style.css" />
+      </stylesheets>
+    </Button>
+    <Button id="buttonIncreaseBPP" fx:id="nextPageButton" font="$x3" layoutX="809.0" layoutY="556.0" minWidth="29.0" mnemonicParsing="false" onAction="#getNextPage" prefWidth="37.0" styleClass="mybutton" text="&gt;" textFill="WHITE" visible="false">
+      <stylesheets>
+        <URL value="@Resources/styles/style.css" />
+      </stylesheets>
+    </Button>
+    <Button id="loginButton" fx:id="findCertainBook" layoutX="14.0" layoutY="505.0" mnemonicParsing="false" onAction="#findOneBook" prefHeight="82.1328125" prefWidth="84.0" style="" styleClass="mybutton, " text="Find&#10;Certain&#10;book" textAlignment="CENTER" textFill="WHITE" visible="false">
+      <font>
+        <Font name="Ubuntu" size="16.0" />
+      </font>
       <stylesheets>
         <URL value="@Resources/styles/style.css" />
       </stylesheets>

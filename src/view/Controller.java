@@ -45,6 +45,7 @@ public class Controller {
     int VERTICAL_SHIFT = 210;
     int MARGIN = 15;
     int BOOKS_PER_ROW = 3;
+    int pageNum = 0;
     String MANAGER_CODE = "1234";
 
     @FXML
@@ -115,6 +116,15 @@ public class Controller {
 
     @FXML
     private Label slogan;
+
+    @FXML
+    private Button nextPageButton;
+
+    @FXML
+    private Button prevPageButton;
+
+    @FXML
+    private Button findCertainBook;
 
     @FXML
     private Label labelInfo;
@@ -241,8 +251,91 @@ public class Controller {
         if(BOOKS_PER_ROW != 5) {
             BOOKS_PER_ROW++;
             HORIZONTAL_SHIFT = (800 / BOOKS_PER_ROW);
-            prepareBooks(allBooks);
+            if(isNowCart) {
+                prepareBooks(cartBooks);
+            } else {
+                prepareBooks(allBooks);
+            }
         }
+    }
+
+    @FXML
+    void findOneBook(ActionEvent event) {
+        Pane container = new Pane();
+        Scene secondScene = new Scene(container, 442.0, 296);
+        secondScene.getStylesheets().add("style.css");
+        Stage newWindow = new Stage();
+        newWindow.setTitle("Search for a book");
+        newWindow.setScene(secondScene);
+
+        Image image = null;
+        try {
+            image = new Image(new FileInputStream(
+                    this.getClass().getProtectionDomain().getCodeSource().getLocation().getPath()
+                            + "../../../src/view/Resources/images/libraryy.jpg"));
+        } catch (FileNotFoundException e1) {
+            e1.printStackTrace();
+        }
+        ImageView wallpaper = new ImageView(image);
+        wallpaper.setFitHeight(297.5);
+        wallpaper.setFitWidth(442.0);
+        wallpaper.setX(0);
+        wallpaper.setY(0);
+        container.getChildren().add(wallpaper);
+        VBox vbx = new VBox();
+        vbx.setMinWidth(442);
+        vbx.setMinHeight(297.5);
+        vbx.setAlignment(Pos.CENTER);
+        TextField id = new TextField();
+        TextField title = new TextField();
+
+        title.setPromptText("Enter the title of the book");
+        title.setFocusTraversable(false);
+        id.setPromptText("Enter id of the book");
+        id.setFocusTraversable(false);
+
+        Button search1 = new Button("Search by id");
+        search1.setFocusTraversable(true);
+        search1.getStyleClass().add("mybutton");
+        search1.setTextFill(Color.WHITE);
+        search1.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                //todo show single book page
+            }
+        });
+
+        Button search2 = new Button("Search by Title");
+        search2.setFocusTraversable(true);
+        search2.getStyleClass().add("mybutton");
+        search2.setTextFill(Color.WHITE);
+        search2.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                //todo show single book page
+            }
+        });
+
+        vbx.getChildren().addAll(id, search1, title, search2);
+        container.getChildren().add(vbx);
+        newWindow.setX(582);
+        newWindow.setY(259);
+        newWindow.show();
+    }
+
+    @FXML
+    void getNextPage(ActionEvent event) {
+        showMarket();
+        //todo remove comments
+        //prepareBooks(database.getPage(pageNum++, 50));
+    }
+    @FXML
+    void getPrevPage(ActionEvent event) {
+        showMarket();
+        if (pageNum != 0) {
+            //prepareBooks(database.getPage(pageNum--, 50));
+        }
+        //todo remove comments
     }
 
     @FXML
@@ -250,7 +343,11 @@ public class Controller {
         if(BOOKS_PER_ROW != 1) {
             BOOKS_PER_ROW--;
             HORIZONTAL_SHIFT = (800 / BOOKS_PER_ROW);
-            prepareBooks(allBooks);
+            if(isNowCart) {
+                prepareBooks(cartBooks);
+            } else {
+                prepareBooks(allBooks);
+            }
         }
     }
 
@@ -724,6 +821,8 @@ public class Controller {
     }
     private void showLogin() {
         toolBar.setVisible(false);
+        nextPageButton.setVisible(false);
+        prevPageButton.setVisible(false);
         firstNameTextbox.setVisible(false);
         lastNameTextbox.setVisible(false);
         rEmailTextbox.setVisible(false);
@@ -738,6 +837,7 @@ public class Controller {
         searchCategoryTextbox.setVisible(false);
         searchAuthorTextbox.setVisible(false);
         searchButton.setVisible(false);
+        findCertainBook.setVisible(false);
         buttonIncreaseBPP.setVisible(false);
         buttondecreaseBPP.setVisible(false);
         labelInfo.setVisible(false);
@@ -771,6 +871,9 @@ public class Controller {
         registerButton.setVisible(false);
 
         labelInfo.setVisible(true);
+        nextPageButton.setVisible(true);
+        prevPageButton.setVisible(true);
+        findCertainBook.setVisible(true);
         buttondecreaseBPP.setVisible(true);
         buttonIncreaseBPP.setVisible(true);
         toolBar.setVisible(true);
@@ -800,6 +903,9 @@ public class Controller {
         registerButton.setLayoutY(458);
         isManagerCheckBox.setVisible(true);
 
+        nextPageButton.setVisible(false);
+        findCertainBook.setVisible(false);
+        prevPageButton.setVisible(false);
         slogan.setVisible(false);
         booksPane.setVisible(false);
         searchTitleTextbox.setVisible(false);
