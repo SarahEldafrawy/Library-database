@@ -5,116 +5,139 @@ import Entites.CartElement;
 import Entites.Order;
 import Entites.User;
 
+import java.sql.SQLData;
+import java.util.HashMap;
+
 public class SQLCommands {
-    public final String SELECT= "SELECT";
-    public final String UPDATE= "UPDATE";
-    public  final String INSERT= "INSERT";
-    public  final String DELETE= "DELETE";
-    public final String ASTRIC = "*";
-    public final String FROM = "FROM";
-    public final String WHERE = "WHERE";
-    public final String LIMIT = "LIMIT";
-    public final String COMMA = ",";
-    public final String DOT = ".";
-    public final String EQUAL = "=";
-    public final String AND = "AND";
-    public final String SPACE = " ";
-    public final String NEWLINE = "\n";
-
-
-    public  final String BOOK= "BOOK";
-    public  final String AUTHOR= "Author";
-    public  final String CART= "CART";
-    public  final String CREDITCARD= "CREDIT_CARD";
-    public  final String ORDER= "ORDER";
-    public  final String PUBLISHER= "PUBLISHER";
-    public  final String SALES= "SALES";
-    public  final String USER= "USER";
 
     public String selectFromBooks(int limit , int pageNumber){
-        StringBuilder query = new StringBuilder();
-        query.append(SELECT);
-        query.append(SPACE);
-        query.append(ASTRIC);
-        query.append(NEWLINE);
-        query.append(FROM);
-        query.append(SPACE);
-        query.append(BOOK);
-        query.append(SPACE);
-        query.append(LIMIT);
-        query.append(SPACE);
-        query.append(Integer.toString(limit * pageNumber));
-        query.append(COMMA);
-        query.append(limit);
-        return query.toString();
+        String query = "SELECT * FROM BOOK LIMIT" + limit*pageNumber + "," + limit;
+        return query;
 
     }
     public String logInUser(String email, String password){
-        StringBuilder query = new StringBuilder();
-        query.append(SELECT);
-        query.append(SPACE);
-        query.append(ASTRIC);
-        query.append(NEWLINE);
-        query.append(FROM);
-        query.append(SPACE);
-        query.append(USER);
-        query.append(NEWLINE);
-        query.append(WHERE);
-        query.append(SPACE);
-        query.append("email_address");
-        query.append(SPACE);
-        query.append(EQUAL);
-        query.append(SPACE);
-        query.append(email);
-        query.append(SPACE);
-        query.append(AND);
-        query.append(SPACE);
-        query.append("password");
-        query.append(SPACE);
-        query.append(EQUAL);
-        query.append(SPACE);
-        query.append(password);
-        return query.toString();
+        String query = "SELECT * FROM USER WHERE USER.user_email = \""
+                + email + "\" AND USER.password = \"" + password + "\"";
+        return query;
     }
 
     public String insertBook(Book book){
-        return null;
+        String query = "INSER INTO BOOK VALUES ("
+                +book.getBookId() + ","
+                + "\"" + book.getTitle() + "\","
+                +"\"" + book.getPubYear() + "\","
+                +book.getSellingPrice() + ","
+                + "\"" + book.getCategory() + "\","
+                +book.getThreshold() + ")";
+        return query;
     }
 
     public String updateBook(Book book){
-        return null;
+        String query = "UPDATE BOOK SET " + book.TITLE + " = " + book.getTitle() + ","
+                + book.PUBYEAR + " = " + book.getPubYear() + ","
+                + book.SELLINGPRICE + " = " + book.getSellingPrice() + ","
+                + book.CATEGORY + " = " + "\"" +  book.getCategory() + "\","
+                + book.QUANTITY + " = " + book.getQuantity() + ","
+                + book.THRESHOLD + " = " + book.getThreshold() + ")"
+                + " WHERE BOOK." + book.BOOKID + " = " +"\""  + book.getBookId() + "\"";
+        return query;
     }
 
 
     public String updateUser(User user) {
-        return null;
+        String query = "UPDATE USER SET "
+                + user.FIRSTNAME + " = \"" + user.getFirstName() + "\","
+                + user.LASTNAME + " = " + "\"" +  user.getLastName() +  "\","
+                + user.EMAILADDRESS + " = " + "\"" +  user.getEmailAddress() + "\","
+                + user.PHONENUMBER + " = " + "\"" + user.getPhoneNumber() + "\","
+                + user.SHIPPINGADDRESS + " = " + "\"" + user.getShippingAddress() + "\","
+                + user.PASSWORD + " = " + "\"" + user.getPassword() + "\","
+                + user.PROMOTED + " = " + user.isPromoted() + ")"
+                + " WHERE USER." + user.USERID + " = "  + user.getUserId() ;
+        return query;
     }
 
     public String addToCart(CartElement cartElement) {
-        return null;
+        String query = "INSERT INTO CART VALUES ("
+                +cartElement.getBookId() + ","
+                +cartElement.getUserId() + ","
+                +cartElement.getQuantity() + ","
+                +cartElement.isInCart() + ")";
+        return query;
     }
 
     public String getCart(int userId) {
-        return null;
+        String query = "SELECT * FROM CART WHERE CART.user_id = " + userId;
+        return query;
     }
 
     public String getAllUsers() {
-        return null;
+        String query = "SELECT * FROM USER";
+        return query;
     }
 
     public String promoteUser(int userId) {
-        return null;
+        String query = "UPDATE USER SET promoted = 1 WHERE USER.user_id = " + userId;
+
+        return query;
     }
 
     public String getAllOrders() {
-        return null;
+        String query = "SELECT * FROM ORDER";
+        return query;
     }
 
     public String placeOrder(Order order) {
-        return null;
+        String query = "INSERT INTO ORDER VALUES ("
+                +order.getOrderId() + ","
+                +order.getBookId() + ","
+                +order.getQuantity() + ","
+                +order.getDate() + ")";
+        return query;
     }
 
     public String deleteOrder(int orderId) {
+        String query = "DELETE FROM ORDER WHERE ORDER.order_id = "
+                + orderId ;
+        return query;
+    }
+
+    public String registerUser(User user) {
+        String query = "INSERT INTO USER VALUES "
+                +"(\"" + user.getFirstName() + "\","
+                + "\"" +  user.getLastName() +  "\","
+                + "\"" +  user.getEmailAddress() + "\","
+                + "\"" + user.getPhoneNumber() + "\","
+                + "\"" + user.getShippingAddress() + "\","
+                + "\"" + user.getPassword() + "\","
+                + user.isPromoted() + ")";
+        return query;
+    }
+
+    public String searchForBooks(HashMap<String, String> searchMap) {
         return null;
+        //todo handle keys names with front end
+    }
+
+    public String getBookById(int bookId) {
+        String query = "SELECT * FROM BOOK WHERE BOOK.book_id = "
+                + bookId;
+        return query;
+    }
+
+    public String getBookByTitle(String title) {
+        String query = "SELECT * FROM BOOK WHERE BOOK.title = \" "
+                + title + "\"" ;
+        return null;
+    }
+
+    public String getBooksByPage(int pageNumber, int limit) {
+        //todo by page
+        return null;
+    }
+
+    public String getNumberOfPages(String key) {
+        String query = "SELECT COUNT AS \"" + key + "\" FROM BOOK GROUP BY book_id";
+        return query;
     }
 }

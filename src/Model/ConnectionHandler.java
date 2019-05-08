@@ -32,4 +32,22 @@ public class ConnectionHandler {
         Statement stmt = con.createStatement();
         return stmt.executeUpdate(query);
     }
+
+    public boolean prepareCall(int userId , int bookId) throws SQLException {
+        CallableStatement statement;
+        if (bookId < 0){
+            String query = "{call purchase(?)}";
+            statement = con.prepareCall(query);
+            statement.setInt(1, userId);
+
+        }
+        else{
+            String query = "{call remove_from_cart(?,?)}";
+            statement = con.prepareCall(query);
+            statement.setInt(1 , userId);
+            statement.setInt(2, bookId);
+        }
+        statement.execute();
+        return true;
+    }
 }

@@ -27,19 +27,9 @@ public class Model implements IModel {
     }
     @Override
     public boolean register(User user) {
-        //TODO implement register
-        try {
-            ResultSet rs = connectionHandler.executeQuery("Select * From BOOK");
-
-        } catch(SQLException e) {
-            System.out.println("SQLException: " + e.getMessage());
-            System.out.println("SQLState: " + e.getSQLState());
-            System.out.println("VendorError: " + e.getErrorCode());
-        }
-        return false;
+        String query = sQlCommands.registerUser(user);
+        return update(query);
     }
-
-
 
     @Override
     public User logIn(String email , String password) {
@@ -49,14 +39,7 @@ public class Model implements IModel {
             User user = null;
             while (resultSet.next()){
                 user = new User();
-                user.setUserId(resultSet.getInt("user_id"));
-                user.setFirstName(resultSet.getString("first_name"));
-                user.setLastName(resultSet.getString("last_name"));
-                user.setEmailAddress(resultSet.getString("email_address"));
-                user.setPhoneNumber(resultSet.getString("phone_number"));
-                user.setShippingAddress(resultSet.getString("shipping_address"));
-                user.setPassword(resultSet.getString("password"));
-                user.setPromoted(resultSet.getBoolean("promoted"));
+                setUser(resultSet, user);
                 return user;
             }
 
@@ -69,6 +52,17 @@ public class Model implements IModel {
         return null;
     }
 
+    private void setUser(ResultSet resultSet, User user) throws SQLException {
+        user.setUserId(resultSet.getInt("user_id"));
+        user.setFirstName(resultSet.getString("first_name"));
+        user.setLastName(resultSet.getString("last_name"));
+        user.setEmailAddress(resultSet.getString("email_address"));
+        user.setPhoneNumber(resultSet.getString("phone_number"));
+        user.setShippingAddress(resultSet.getString("shipping_address"));
+        user.setPassword(resultSet.getString("password"));
+        user.setPromoted(resultSet.getBoolean("promoted"));
+    }
+
 
     @Override
     public boolean updateUser(User user) {
@@ -79,19 +73,85 @@ public class Model implements IModel {
     @Override
     public ArrayList<Book> getStartBooks() {
         String query = sQlCommands.selectFromBooks(pagination.getLimit(), 0);
+        return getBooks(query);
+
+    }
+    @Override
+    public int getNumberOfPages(){
+        final String key = "count";
+        String query = sQlCommands.getNumberOfPages(key);
+        int numberOfPages = 0;
+        try {
+            ResultSet resultSet = connectionHandler.executeQuery(query);
+            numberOfPages = resultSet.getInt(key);
+        } catch (SQLException e) {
+            System.out.println("SQLException: " + e.getMessage());
+            System.out.println("SQLState: " + e.getSQLState());
+            System.out.println("VendorError: " + e.getErrorCode());
+        }
+        return numberOfPages;
+    }
+
+    public ArrayList<Book> getPage(int pageNumber, int limit){
+        String query = sQlCommands.getBooksByPage(pageNumber , limit);
+        return getBooks(query);
+    }
+
+    @Override
+    public ArrayList<Book> searchForBooks(HashMap<String, String> searchMap) {
+        String query = sQlCommands.searchForBooks(searchMap);
+        return getBooks(query);
+    }
+
+    @Override
+    public Book getBookById(int bookId){
+        String query = sQlCommands.getBookById(bookId);
+        return getBook(query);
+
+    }
+
+    private void setBook(Book book, ResultSet resultSet) throws SQLException {
+        book.setBookId(resultSet.getInt("book_id"));
+        book.setTitle(resultSet.getString("title"));
+        book.setPubYear(resultSet.getString("pub_year"));
+        book.setSellingPrice(resultSet.getFloat("selling_price"));
+        book.setCategory(resultSet.getString("category"));
+        book.setQuantity(resultSet.getInt("quantity"));
+        book.setPublisherId(resultSet.getInt("publisher_id"));
+        book.setThreshold(resultSet.getInt("threshold"));
+    }
+
+    @Override
+    public Book getBookByTitle(String title){
+        String query = sQlCommands.getBookByTitle(title);
+        return getBook(query);
+
+    }
+
+    private Book getBook(String query) {
+        Book book = null;
+        try {
+            ResultSet resultSet = connectionHandler.executeQuery(query);
+            while (resultSet.next()){
+                book = new Book();
+                setBook(book, resultSet);
+            }
+        } catch (SQLException e) {
+            System.out.println("SQLException: " + e.getMessage());
+            System.out.println("SQLState: " + e.getSQLState());
+            System.out.println("VendorError: " + e.getErrorCode());
+            return null;
+        }
+        return book;
+    }
+
+    private ArrayList<Book> getBooks(String query) {
         ArrayList<Book> books = new ArrayList<>();
         try {
             ResultSet resultSet = connectionHandler.executeQuery(query);
             while (resultSet.next()){
                 Book book = new Book();
-                book.setBookId(resultSet.getInt("book_id"));
-                book.setTitle(resultSet.getString("title"));
-                book.setPubYear(resultSet.getString("pub_year"));
-                book.setSellingPrice(resultSet.getFloat("selling_price"));
-                book.setCategory(resultSet.getString("category"));
-                book.setQuantity(resultSet.getInt("quantity"));
-                book.setPublisherId(resultSet.getInt("publisher_id"));
-                book.setThreshold(resultSet.getInt("threshold"));
+                setBook(book, resultSet);
                 books.add(book);
             }
         } catch (SQLException e) {
@@ -101,23 +161,6 @@ public class Model implements IModel {
             return null;
         }
         return books;
-
-    }
-
-    public ArrayList<Book> getNextPage(){
-        return null;
-    }
-
-    public ArrayList<Book> getPreviousPage(){
-        return null;
-    }
-    //todo get next and previous pages
-
-    @Override
-    public ArrayList<Book> searchForBook(HashMap<String, String> searchMap) {
-        //TODO implement search for book
-        //TODO note: user can search for book by id, title / search for books by category, author, publisher
-        return null;
     }
 
     @Override
@@ -142,9 +185,16 @@ public class Model implements IModel {
     }
 
     @Override
-    public boolean removeFromCart(int bookId, int quantity, int userId) {
-        //TODO implement delete tuple from cart
-        return false;
+    public boolean removeFromCart(int bookId, int userId) {
+        try {
+            connectionHandler.prepareCall(userId , bookId);
+        } catch (SQLException e) {
+            System.out.println("SQLException: " + e.getMessage());
+            System.out.println("SQLState: " + e.getSQLState());
+            System.out.println("VendorError: " + e.getErrorCode());
+            return false;
+        }
+        return true;
     }
 
     @Override
@@ -171,8 +221,15 @@ public class Model implements IModel {
 
     @Override
     public boolean checkout(int userId) {
-        //todo implement call checkout procedure (Transaction)
-        return false;
+        try {
+            connectionHandler.prepareCall(userId , -1);
+        } catch (SQLException e) {
+            System.out.println("SQLException: " + e.getMessage());
+            System.out.println("SQLState: " + e.getSQLState());
+            System.out.println("VendorError: " + e.getErrorCode());
+            return false;
+        }
+        return true;
     }
 
     @Override
@@ -183,14 +240,7 @@ public class Model implements IModel {
             ResultSet resultSet = connectionHandler.executeQuery(query);
             while (resultSet.next()){
                 User user = new User();
-                user.setUserId(resultSet.getInt("user_id"));
-                user.setFirstName(resultSet.getString("first_name"));
-                user.setLastName(resultSet.getString("last_name"));
-                user.setEmailAddress(resultSet.getString("email_address"));
-                user.setPhoneNumber(resultSet.getString("phone_number"));
-                user.setShippingAddress(resultSet.getString("shipping_address"));
-                user.setPassword(resultSet.getString("password"));
-                user.setPromoted(resultSet.getBoolean("promoted"));
+                setUser(resultSet, user);
                 users.add(user);
             }
         } catch (SQLException e) {
@@ -226,8 +276,8 @@ public class Model implements IModel {
 
     @Override
     public boolean addBook(Book book) {
-        //todo implement insert new book
-        return false;
+        String query = sQlCommands.insertBook(book);
+        return update(query);
     }
 
     @Override
