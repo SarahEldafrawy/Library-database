@@ -104,4 +104,15 @@ public class Book {
     public void setPublisherId(int publisherId) {
         this.publisherId = publisherId;
     }
+
+    public void setPublisherName(String publisher_name) {
+        this.PublisherName = publisher_name;
+    }
+
+    public void addAuthor(String author_name) {
+        if (authorsNames == null) {
+            authorsNames = new ArrayList<>();
+        }
+        authorsNames.add(author_name);
+    }
 }
