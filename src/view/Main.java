@@ -13,7 +13,7 @@ public class Main extends Application {
         Parent root = FXMLLoader.load(getClass().getResource("sample.fxml"));
         primaryStage.setTitle("AIS BookShop");
         primaryStage.setResizable(false);
-        primaryStage.setScene(new Scene(root, 884, 595.75));
+        primaryStage.setScene(new Scene(root, 1252, 807.75));
         primaryStage.show();
     }
 
