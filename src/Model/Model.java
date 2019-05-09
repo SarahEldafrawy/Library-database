@@ -109,6 +109,7 @@ public class Model implements IModel {
     @Override
     public Book getBookById(int bookId){
         String query = sQlCommands.getBookById(bookId);
+        System.out.println(query);
         return getBook(query);
 
     }
@@ -138,6 +139,11 @@ public class Model implements IModel {
             while (resultSet.next()){
                 book = new Book();
                 setBook(book, resultSet);
+                System.out.println(resultSet);
+                book.setPublisherName(resultSet.getString("publisher_name"));
+                while(resultSet.next()) {
+                    book.addAuthor(resultSet.getString("author_name"));
+                }
             }
         } catch (SQLException e) {
             System.out.println("SQLException: " + e.getMessage());

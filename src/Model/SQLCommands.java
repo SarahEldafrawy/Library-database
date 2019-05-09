@@ -10,7 +10,6 @@ public class SQLCommands {
     public String selectFromBooks(int limit , int pageNumber){
         String query = "SELECT * FROM BOOK LIMIT" + limit*pageNumber + "," + limit;
         return query;
-
     }
     public String logInUser(String email, String password){
         String query = "SELECT * FROM USER WHERE USER.email_address = \""
@@ -131,8 +130,8 @@ public class SQLCommands {
                         where += " AND ";
                     }
                     from+= ", AUTHORED_BY, AUTHOR ";
-                    where+= " AND BOOK.book_id = AUTHORED_BY.book_id  AND  AUTHORED_BY.author_id = AUTHOR.author_id "
-                +" Author.name = \"" + searchMap.get("author_name") +"\" ";
+                    where+= " BOOK.book_id = AUTHORED_BY.book_id  AND  AUTHORED_BY.author_id = AUTHOR.author_id AND "
+                +" AUTHOR.name = \"" + searchMap.get("author_name") +"\" ";
                     flag = true;
                 }
                 if (searchMap.containsKey("category")) {
@@ -147,10 +146,8 @@ public class SQLCommands {
     }
 
     public String getBookById(int bookId) {
-//        FROM BOOK, PUBLISHER, AUTHORED_BY, AUTHOR WHERE BOOK.publisher_id = PUBLISHER.publisher_id  AND "+
-//        "BOOK.book_id = AUTHORED_BY.book_id  AND  AUTHORED_BY.author_id = AUTHOR.author_id
         String query = "SELECT BOOK.book_id , BOOK.title , BOOK.pub_year,BOOK.selling_price ,BOOK.category ," +
-                " BOOK.quantity , BOOK.publisher_id , BOOK.threshold ,AUTHOR.author_name , PUBLISHER.publisher_name" +
+                " BOOK.quantity , BOOK.publisher_id , BOOK.threshold ,AUTHOR.name As author_name , PUBLISHER.name AS publisher_name " +
                 " FROM BOOK,AUTHOR,AUTHORED_BY,PUBLISHER WHERE BOOK.book_id = "
                 + bookId +" AND  BOOK.publisher_id = PUBLISHER.publisher_id  AND "+
         "BOOK.book_id = AUTHORED_BY.book_id  AND  AUTHORED_BY.author_id = AUTHOR.author_id";
@@ -159,7 +156,7 @@ public class SQLCommands {
 
     public String getBookByTitle(String title) {
         String query = "SELECT BOOK.book_id , BOOK.title , BOOK.pub_year,BOOK.selling_price ,BOOK.category ," +
-                " BOOK.quantity , BOOK.publisher_id , BOOK.threshold ,AUTHOR.author_name , PUBLISHER.publisher_name\" +\n" +
+                " BOOK.quantity , BOOK.publisher_id , BOOK.threshold ,AUTHOR.name As author_name , PUBLISHER.name AS publisher_name " +
                 "  FROM BOOK,AUTHOR,AUTHORED_BY,PUBLISHER WHERE BOOK.title =  \""
                 + title + "\"  AND  BOOK.publisher_id = PUBLISHER.publisher_id  AND "+
                 "BOOK.book_id = AUTHORED_BY.book_id  AND  AUTHORED_BY.author_id = AUTHOR.author_id";
