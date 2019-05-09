@@ -1,9 +1,6 @@
 package Model;
 
-import Entites.Book;
-import Entites.CartElement;
-import Entites.Order;
-import Entites.User;
+import Entites.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -35,6 +32,13 @@ public interface IModel {
     ArrayList<Order> getAllOrders();
     boolean placeOrder(int bookId , int quantity);
     boolean confirmOrder(int OrderId);
+    int getNumberOfPagesOfPublisher();
+    ArrayList<Publisher> getPublishersByPage(int pageNumber, int limit);
+    boolean addPublisher(Publisher publisher);
+    int getNumberOfPagesOfAuthors();
+    ArrayList<Author> getAuthorsByPage(int pageNumber, int limit);
+    boolean addAuthor(Author author);
+
     // functions that return reports
 
 

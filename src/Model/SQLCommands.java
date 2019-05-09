@@ -1,9 +1,6 @@
 package Model;
 
-import Entites.Book;
-import Entites.CartElement;
-import Entites.Order;
-import Entites.User;
+import Entites.*;
 
 import java.sql.SQLData;
 import java.util.HashMap;
@@ -22,7 +19,7 @@ public class SQLCommands {
     }
 
     public String insertBook(Book book){
-        String query = "INSER INTO BOOK VALUES ("
+        String query = "INSERT INTO BOOK VALUES ("
                 +book.getBookId() + ","
                 + "\"" + book.getTitle() + "\","
                 +"\"" + book.getPubYear() + "\","
@@ -123,6 +120,7 @@ public class SQLCommands {
         }
         //todo el search 5rban wel joins
         //TODO tany el search 5arban from Islam
+        //todo change author name
         String query = "SELECT BOOK.book_id , BOOK.title , BOOK.pub_year," +
                 " BOOK.selling_price ,BOOK.category , BOOK.quantity , BOOK.publisher_id , BOOK.threshold " +
                 "FROM BOOK WHERE";
@@ -170,6 +168,47 @@ public class SQLCommands {
 
     public String emptyCart(int userId) {
         String query = "DELETE FROM CART WHERE user_id = " + userId;
+        return query;
+    }
+
+    public String getAllPublishers() {
+        String query = "SELECT * FROM PUBLISHER";
+        return query;
+    }
+
+    public String insertPublisher(Publisher publisher) {
+        String query = "INSERT INTO PUBLISHER VALUES ("
+                + "publisher_id,"
+                + "\"" + publisher.getName() + "\","
+                +"\"" + publisher.getPhone() + "\","
+                + "\"" + publisher.getAddress() + "\")";
+        return query;
+    }
+
+    public String getNumberOfPagesOfPublishers(String key) {
+        String query = "SELECT COUNT AS \"" + key + "\" FROM PUBLISHER GROUP BY publisher_id";
+        return query;
+    }
+
+    public String getPublishersByPage(int pageNumber, int limit) {
+        String query = "SELECT * FROM PUBLISHER LIMIT " + pageNumber*limit+ " , " +limit+"";
+        return query;
+    }
+
+    public String getNumberOfPagesOfAuthors(String key) {
+        String query = "SELECT COUNT AS \"" + key + "\" FROM AUTHOR GROUP BY author_id";
+        return query;
+    }
+
+    public String getAuthorsByPage(int pageNumber, int limit) {
+        String query = "SELECT * FROM AUTHOR LIMIT " + pageNumber*limit+ " , " +limit+"";
+        return query;
+    }
+
+    public String insertAuthor(Author author) {
+        String query = "INSERT INTO AUTHOR VALUES ("
+                + "author_id,"
+                + "\"" + author.getName() + "\")";
         return query;
     }
 }
