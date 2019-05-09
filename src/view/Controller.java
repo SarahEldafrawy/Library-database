@@ -1122,7 +1122,7 @@ public class Controller {
         telefonTextbox.setVisible(true);
         addressTextbox.setVisible(true);
         loginButton.setLayoutX(loginButton.getLayoutX());
-        registerButton.setLayoutY(437 + 160);
+        loginButton.setLayoutY(437 + 160);
         registerButton.setLayoutX(registerButton.getLayoutX());
         registerButton.setLayoutY(437 + 160);
         isManagerCheckBox.setVisible(true);
