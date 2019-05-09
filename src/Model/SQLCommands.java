@@ -146,10 +146,8 @@ public class SQLCommands {
     }
 
     public String getBookById(int bookId) {
-//        FROM BOOK, PUBLISHER, AUTHORED_BY, AUTHOR WHERE BOOK.publisher_id = PUBLISHER.publisher_id  AND "+
-//        "BOOK.book_id = AUTHORED_BY.book_id  AND  AUTHORED_BY.author_id = AUTHOR.author_id
         String query = "SELECT BOOK.book_id , BOOK.title , BOOK.pub_year,BOOK.selling_price ,BOOK.category ," +
-                " BOOK.quantity , BOOK.publisher_id , BOOK.threshold ,AUTHOR.author_name , PUBLISHER.publisher_name" +
+                " BOOK.quantity , BOOK.publisher_id , BOOK.threshold ,AUTHOR.name As author_name , PUBLISHER.name AS publisher_name " +
                 " FROM BOOK,AUTHOR,AUTHORED_BY,PUBLISHER WHERE BOOK.book_id = "
                 + bookId +" AND  BOOK.publisher_id = PUBLISHER.publisher_id  AND "+
         "BOOK.book_id = AUTHORED_BY.book_id  AND  AUTHORED_BY.author_id = AUTHOR.author_id";
@@ -158,7 +156,7 @@ public class SQLCommands {
 
     public String getBookByTitle(String title) {
         String query = "SELECT BOOK.book_id , BOOK.title , BOOK.pub_year,BOOK.selling_price ,BOOK.category ," +
-                " BOOK.quantity , BOOK.publisher_id , BOOK.threshold ,AUTHOR.author_name , PUBLISHER.publisher_name\" +\n" +
+                " BOOK.quantity , BOOK.publisher_id , BOOK.threshold ,AUTHOR.name As author_name , PUBLISHER.name AS publisher_name " +
                 "  FROM BOOK,AUTHOR,AUTHORED_BY,PUBLISHER WHERE BOOK.title =  \""
                 + title + "\"  AND  BOOK.publisher_id = PUBLISHER.publisher_id  AND "+
                 "BOOK.book_id = AUTHORED_BY.book_id  AND  AUTHORED_BY.author_id = AUTHOR.author_id";
