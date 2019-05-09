@@ -8,15 +8,13 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-
-
 public class Model implements IModel {
     private Paginator pagination;
     private ConnectionHandler connectionHandler;
     private SQLCommands sQlCommands;
 
     public Model() throws SQLException, ClassNotFoundException {
-        connectionHandler = new ConnectionHandler();
+        connectionHandler = ConnectionHandler.getInstance();
         connectionHandler.startConnection();
         pagination = new Paginator();
         sQlCommands = new SQLCommands();

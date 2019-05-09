@@ -1,6 +1,9 @@
 package Model;
 
-import Entites.*;
+import Entites.Book;
+import Entites.CartElement;
+import Entites.Order;
+import Entites.User;
 
 import java.sql.SQLData;
 import java.util.HashMap;
@@ -120,16 +123,25 @@ public class SQLCommands {
         }
         //todo el search 5rban wel joins
         //TODO tany el search 5arban from Islam
-        //todo change author name
         String query = "SELECT BOOK.book_id , BOOK.title , BOOK.pub_year," +
                 " BOOK.selling_price ,BOOK.category , BOOK.quantity , BOOK.publisher_id , BOOK.threshold " +
                 "FROM BOOK WHERE";
+        Boolean flag = true;
                 if(searchMap.containsKey("publisher_name")) {
                     query+= " PUBLISHER.name = \"" + searchMap.get("publisher_name") + "\"";
+                    flag = false;
                 } if(searchMap.containsKey("author_name")) {
-                    query+= " AND Author.name = \"" + searchMap.get("author_name") +"\"";
+                    if(!flag) {
+                       query+= " AND";
+                    }
+                    query+= " Author.name = \"" + searchMap.get("author_name") +"\"";
+                    flag = false;
                 } if (searchMap.containsKey("category")) {
+                    if(!flag) {
+                        query+= " AND";
+                    }
                     query+= " BOOK.category = \""+ searchMap.get("category") + "\"";
+                    flag = false;
                 }
         return query;
     }
