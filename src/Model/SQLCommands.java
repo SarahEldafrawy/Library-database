@@ -118,18 +118,31 @@ public class SQLCommands {
         if(searchMap.isEmpty()) {
             return "FROM BOOK ";
         }
-        String query =
-                "FROM BOOK, PUBLISHER, AUTHORED_BY, AUTHOR WHERE BOOK.publisher_id = PUBLISHER.publisher_id  AND "+
-                "BOOK.book_id = AUTHORED_BY.book_id  AND  AUTHORED_BY.author_id = AUTHOR.author_id ";
-                if(searchMap.containsKey("name")) {
-                    query+= "  AND  PUBLISHER.name = \"" + searchMap.get("name") + "\" ";
+        String from = " FROM BOOK ";
+        String where = " WHERE ";
+        Boolean flag = false;
+                if(searchMap.containsKey("publisher_name")) {
+                    from+= " , PUBLISHER";
+                    where+= " BOOK.publisher_id = PUBLISHER.publisher_id AND  PUBLISHER.name = \"" + searchMap.get("publisher_name") + "\" ";
+                    flag = true;
                 }
-                if(searchMap.containsKey("name")) {
-                    query+= "  AND  Author.name = \"" + searchMap.get("name") +"\" ";
+                if(searchMap.containsKey("author_name")) {
+                    if(flag) {
+                        where += " AND ";
+                    }
+                    from+= ", AUTHORED_BY, AUTHOR ";
+                    where+= " AND BOOK.book_id = AUTHORED_BY.book_id  AND  AUTHORED_BY.author_id = AUTHOR.author_id "
+                +" Author.name = \"" + searchMap.get("author_name") +"\" ";
+                    flag = true;
                 }
                 if (searchMap.containsKey("category")) {
-                    query+= "  AND  BOOK.category = \""+ searchMap.get("category") + "\" ";
+                    if(flag) {
+                        where += " AND ";
+                    }
+                    where+= " BOOK.category = \""+ searchMap.get("category") + "\" ";
+                    flag = true;
                 }
+                String query = from + where;
         return query;
     }
 
@@ -137,18 +150,18 @@ public class SQLCommands {
 //        FROM BOOK, PUBLISHER, AUTHORED_BY, AUTHOR WHERE BOOK.publisher_id = PUBLISHER.publisher_id  AND "+
 //        "BOOK.book_id = AUTHORED_BY.book_id  AND  AUTHORED_BY.author_id = AUTHOR.author_id
         String query = "SELECT BOOK.book_id , BOOK.title , BOOK.pub_year,BOOK.selling_price ,BOOK.category ," +
-                " BOOK.quantity , BOOK.publisher_id , BOOK.threshold ,AUTHOR.name , PUBLISHER.name" +
+                " BOOK.quantity , BOOK.publisher_id , BOOK.threshold ,AUTHOR.author_name , PUBLISHER.publisher_name" +
                 " FROM BOOK,AUTHOR,AUTHORED_BY,PUBLISHER WHERE BOOK.book_id = "
-                + bookId +"  AND  BOOK.publisher_id = PUBLISHER.publisher_id  AND  "+
+                + bookId +" AND  BOOK.publisher_id = PUBLISHER.publisher_id  AND "+
         "BOOK.book_id = AUTHORED_BY.book_id  AND  AUTHORED_BY.author_id = AUTHOR.author_id";
         return query;
     }
 
     public String getBookByTitle(String title) {
         String query = "SELECT BOOK.book_id , BOOK.title , BOOK.pub_year,BOOK.selling_price ,BOOK.category ," +
-                " BOOK.quantity , BOOK.publisher_id , BOOK.threshold ,AUTHOR.name , PUBLISHER.name\" +\n" +
+                " BOOK.quantity , BOOK.publisher_id , BOOK.threshold ,AUTHOR.author_name , PUBLISHER.publisher_name\" +\n" +
                 "  FROM BOOK,AUTHOR,AUTHORED_BY,PUBLISHER WHERE BOOK.title =  \""
-                + title + "\"  AND  BOOK.publisher_id = PUBLISHER.publisher_id  AND  "+
+                + title + "\"  AND  BOOK.publisher_id = PUBLISHER.publisher_id  AND "+
                 "BOOK.book_id = AUTHORED_BY.book_id  AND  AUTHORED_BY.author_id = AUTHOR.author_id";
         return query;
     }
@@ -159,7 +172,7 @@ public class SQLCommands {
         String query = "SELECT BOOK.book_id , BOOK.title , BOOK.pub_year," +
                 " BOOK.selling_price ,BOOK.category , BOOK.quantity , BOOK.publisher_id , BOOK.threshold "
                 +whereClause+" LIMIT " + pageNumber*limit+ " , " +limit+"";
-
+        System.out.println(query);
         return query;
     }
 
