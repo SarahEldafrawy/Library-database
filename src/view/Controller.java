@@ -446,6 +446,11 @@ public class Controller {
             @Override
             public void handle(ActionEvent event) {
                 //todo create new publisher and add it to database
+                Publisher pub = new Publisher();
+                pub.setAddress(pubAddress.getText());
+                pub.setName(pubName.getText());
+                pub.setPhone(phone.getText());
+                database.addPublisher(pub);
                 ((Node)event.getSource()).getScene().getWindow().hide();
             }
         });
@@ -822,7 +827,10 @@ public class Controller {
         done.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                //todo create new author and add it to database
+                //todo create new author and add it to database, done
+                Author author = new Author();
+                author.setName(authorName.getText());
+                database.addAuthor(author);
                 ((Node)event.getSource()).getScene().getWindow().hide();
             }
         });
@@ -1201,7 +1209,7 @@ public class Controller {
         bookAuthor.getChildren().addAll(pubYear1, pubYear2);
 
         //todo make not pub id.. but pub name
-        String Pub = book.getPublisherId() + "";
+        String Pub = book.getPublisherName();
         HBox publisher = new HBox();
         publisher.setAlignment(Pos.CENTER);
         Label pub1 = new Label("Published by: ");
