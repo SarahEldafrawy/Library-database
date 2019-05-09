@@ -338,5 +338,9 @@ public class Model implements IModel {
         return update(query);
     }
 
+    public boolean emptyCart(int userId){
+        String query = sQlCommands.emptyCart(userId);
+        return update(query);
+    }
 }
 

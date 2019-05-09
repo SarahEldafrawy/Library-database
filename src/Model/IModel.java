@@ -19,6 +19,7 @@ public interface IModel {
     ArrayList<Book> searchForBooks(HashMap<String,String> searchMap);
     boolean addToCart(int bookId, int quantity, int userId);
     boolean removeFromCart(int bookId, int userId);
+    boolean emptyCart(int userId);
     ArrayList<CartElement> getCart(int userId);
     boolean checkout(int userId);
     Book getBookById(int bookId);

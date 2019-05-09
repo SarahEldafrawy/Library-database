@@ -21,8 +21,8 @@ import javafx.scene.text.Font;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.ResourceBundle;
+import java.util.*;
+
 import Entites.*;
 import Model.*;
 import javafx.scene.text.FontWeight;
@@ -40,6 +40,7 @@ public class Controller {
     TextField currentCount[];
     Button addToCartButton[];
     int HORIZONTAL_SHIFT = 800/3;
+    int LIMIT = 50;
     boolean addedToCart = false;
     boolean isNowCart = false;
     int VERTICAL_SHIFT = 210;
@@ -158,6 +159,7 @@ public class Controller {
 
     @FXML
     void loginClicked(MouseEvent event) {
+        isNowCart = false;
         if(emailTextbox.isVisible()) {
             try {
                 establishNewConncetion();
@@ -214,6 +216,8 @@ public class Controller {
             }
             if(database.register(newUser)) {
                 showMarket();
+                currentUser = database.logIn(newUser.getEmailAddress() , newUser.getPassword());
+                prepareBooks(allBooks);
             } else {
                 showErrorLogIn();
             }
@@ -326,13 +330,13 @@ public class Controller {
     @FXML
     void getNextPage(ActionEvent event) {
         showMarket();
-        prepareBooks(database.getBooksByPage(pageNum++, 50));
+        prepareBooks(database.getBooksByPage(++pageNum, LIMIT));
     }
     @FXML
     void getPrevPage(ActionEvent event) {
         showMarket();
         if (pageNum != 0) {
-            prepareBooks(database.getBooksByPage(pageNum--, 50));
+            prepareBooks(database.getBooksByPage(--pageNum, LIMIT));
         }
     }
 
@@ -376,12 +380,15 @@ public class Controller {
     void clickHome(ActionEvent event) throws InterruptedException {
         isNowCart = false;
         showMarket();
-        prepareBooks(allBooks);
+        pageNum = 0;
+        prepareBooks(database.getBooksByPage(pageNum, LIMIT));
     }
 
     @FXML
     void clickLogout(ActionEvent event) {
+        database.emptyCart(currentUser.getUserId());
         currentUser = null;
+        cartBooks = null;
         showLogin();
     }
 
@@ -417,12 +424,19 @@ public class Controller {
         vbx.setMinHeight(297.5);
         vbx.setAlignment(Pos.CENTER);
         TextField title = new TextField();
+        TextField bookid = new TextField();
         TextField authors = new TextField();
+        TextField publisherid = new TextField();
         TextField price = new TextField();
         TextField count = new TextField();
         TextField dateOfPublishing = new TextField();
+        TextField category = new TextField();
         title.setPromptText("Enter the title of the book");
         title.setFocusTraversable(false);
+        publisherid.setPromptText("Enter the publisher ID");
+        publisherid.setFocusTraversable(false);
+        bookid.setPromptText("Enter the ISPN of the book");
+        bookid.setFocusTraversable(false);
         authors.setPromptText("Enter author(s) of the book");
         authors.setFocusTraversable(false);
         price.setPromptText("How much is that book?");
@@ -431,6 +445,8 @@ public class Controller {
         count.setFocusTraversable(false);
         dateOfPublishing.setPromptText("Date of publishing");
         dateOfPublishing.setFocusTraversable(false);
+        category.setPromptText("Category of the book");
+        category.setFocusTraversable(false);
         Button done = new Button("Done");
         done.setFocusTraversable(true);
         done.getStyleClass().add("mybutton");
@@ -438,11 +454,20 @@ public class Controller {
         done.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                //todo save new book data
+                Book book = new Book();
+                book.setBookId(Integer.valueOf(bookid.getText()));
+                book.setPublisherId(Integer.valueOf(publisherid.getText()));
+                book.setTitle(title.getText());
+                book.setQuantity(Integer.valueOf(count.getText()));
+                book.setCategory(category.getText());
+                book.setSellingPrice(Float.valueOf(price.getText()));
+                book.setPubYear(dateOfPublishing.getText());
+                //todo setAuthors
+                database.addBook(book);
                 ((Node)event.getSource()).getScene().getWindow().hide();
             }
         });
-        vbx.getChildren().addAll(title, authors, price, count, dateOfPublishing, done);
+        vbx.getChildren().addAll(title, bookid, authors,publisherid, price, count, dateOfPublishing, category, done);
         container.getChildren().add(vbx);
         newWindow.setX(582);
         newWindow.setY(259);
@@ -482,12 +507,16 @@ public class Controller {
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
-        //Label secondLabel = new Label(currentUser.getFirstName() + " " + currentUser.getLastName());
-        Label name = new Label("Islam Gamal");
-        Label verification = new Label("Verified");
-        Label email = new Label("islamgamal77@gmail.com");
-        Label phone = new Label("+(20)109-144-8249");
-        Label address = new Label("Zorkani St, Miami, Alexandria");
+        Label name = new Label(currentUser.getFirstName() + " " + currentUser.getLastName());
+        Label verification;
+        if(currentUser.isPromoted()) {
+            verification = new Label("Verified");
+        } else {
+            verification = new Label("Not Verified");
+        }
+        Label email = new Label(currentUser.getEmailAddress());
+        Label phone = new Label(currentUser.getPhoneNumber());
+        Label address = new Label(currentUser.getShippingAddress());
 
         Button button = new Button("Edit my profile info");
         Button buttonBack = new Button("Back");
@@ -571,7 +600,25 @@ public class Controller {
                         chngpwd.setOnAction(new EventHandler<ActionEvent>() {
                             @Override
                             public void handle(ActionEvent e) {
-                               //todo change password
+                                User temp = new User();
+                                temp.setFirstName(currentUser.getFirstName());
+                                temp.setPassword(currentUser.getPassword());
+                                temp.setPromoted(currentUser.isPromoted());
+                                temp.setPhoneNumber(currentUser.getPhoneNumber());
+                                temp.setShippingAddress(currentUser.getShippingAddress());
+                                temp.setEmailAddress(currentUser.getEmailAddress());
+                                temp.setLastName(currentUser.getLastName());
+                                temp.setUserId(currentUser.getUserId());
+                                if(newpassword.getText() != confirmpasswrd.getText() || !oldpassword.equals(currentUser.getPassword())) {
+                                    //todo make error not matching
+                                } else {
+                                    currentUser.setPassword(newpassword.getText());
+                                    if(!database.updateUser(currentUser)) {
+                                        currentUser.setPassword(temp.getPassword());
+                                        //todo show error
+                                    }
+                                }
+
                                 ((Node)e.getSource()).getScene().getWindow().hide();
                             }
                         });
@@ -588,7 +635,27 @@ public class Controller {
                 done.setOnAction(new EventHandler<ActionEvent>() {
                     @Override
                     public void handle(ActionEvent event) {
-                        //todo save new profile data
+                        User temp = new User();
+                        temp.setFirstName(currentUser.getFirstName());
+                        temp.setPassword(currentUser.getPassword());
+                        temp.setPromoted(currentUser.isPromoted());
+                        temp.setPhoneNumber(currentUser.getPhoneNumber());
+                        temp.setShippingAddress(currentUser.getShippingAddress());
+                        temp.setEmailAddress(currentUser.getEmailAddress());
+                        temp.setLastName(currentUser.getLastName());
+                        temp.setUserId(currentUser.getUserId());
+
+                        List<String> names;
+                        names = Arrays.asList(name.getText().split(" "));
+                        currentUser.setFirstName(names.get(0));
+                        currentUser.setLastName(names.get(names.size()-1));
+                        currentUser.setEmailAddress(email.getText());
+                        currentUser.setPhoneNumber(phone.getText());
+                        currentUser.setShippingAddress(address.getText());
+                        if(!database.updateUser(currentUser)) {
+                            currentUser = temp;
+                            //todo show error
+                        }
                         ((Node)event.getSource()).getScene().getWindow().hide();
                     }
                 });
@@ -653,6 +720,28 @@ public class Controller {
             secretCodeTextField.setVisible(true);
         } else {
             secretCodeTextField.setVisible(false);
+        }
+    }
+
+    @FXML
+    void clickSearch(ActionEvent event) {
+        Book book = new Book();
+        HashMap<String, String> searchElements = new HashMap<>();
+        if(!searchAuthorTextbox.getText().equals("")) {
+            searchElements.put(book.AUTHOR_NAME, searchAuthorTextbox.getText());
+        }
+        if(!searchCategoryTextbox.getText().equals("")) {
+            searchElements.put(book.CATEGORY, searchCategoryTextbox.getText());
+        }
+        if(!searchTitleTextbox.getText().equals("")) {
+            searchElements.put(book.TITLE, searchTitleTextbox.getText());
+        }
+        if(searchElements.size() > 0) {
+            allBooks = database.searchForBooks(searchElements);
+            showMarket();
+            if(allBooks!=null) {
+                prepareBooks(allBooks);
+            }
         }
     }
 
@@ -780,8 +869,8 @@ public class Controller {
                                 "-fx-text-fill: WHITE ;");
                         int index = Integer.valueOf(((Button)(event.getSource())).getId());
                         int quantity = Integer.valueOf(currentCount[index].getText());
-                        //todo uncomment
-//                        database.addToCart(allLibraryBooks.get(index).getBookId(),quantity,currentUser.getUserId());
+                        //todo check if not already added ( when home after cart )
+                        database.addToCart(allLibraryBooks.get(index).getBookId(),quantity,currentUser.getUserId());
                         cartBooks.add(allLibraryBooks.get(index));
                     } else {
                         Button cartButton = ((Button) (event.getSource()));
@@ -790,7 +879,7 @@ public class Controller {
                                 "-fx-text-fill: WHITE ;");
                         int index = Integer.valueOf(((Button)(event.getSource())).getId());
                         int quantity = Integer.valueOf(currentCount[index].getText());
-//                        database.removeFromCart(allLibraryBooks.get(index).getBookId(),currentUser.getUserId());
+                        database.removeFromCart(allLibraryBooks.get(index).getBookId(),currentUser.getUserId());
                         cartBooks.remove(allLibraryBooks.get(index));
                         if(isNowCart) {
                             prepareBooks(cartBooks);
@@ -840,6 +929,7 @@ public class Controller {
         buttondecreaseBPP.setVisible(false);
         labelInfo.setVisible(false);
         toolBar.setVisible(false);
+        checkoutButton.setVisible(false);
 
         slogan.setVisible(false);
         loginButton.setLayoutX(226);
@@ -924,7 +1014,7 @@ public class Controller {
         database = new Model();
         allBooks = new ArrayList<Book>();
         currentUser = new User();
-        allBooks = database.getBooksByPage(pageNum,50);
+        allBooks = database.getBooksByPage(pageNum,LIMIT);
         cartBooks = new ArrayList<Book>();
 
         /*currentUser.setFirstName("Islam");

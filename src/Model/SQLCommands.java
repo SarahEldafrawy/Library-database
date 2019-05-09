@@ -28,6 +28,8 @@ public class SQLCommands {
                 +"\"" + book.getPubYear() + "\","
                 +book.getSellingPrice() + ","
                 + "\"" + book.getCategory() + "\","
+                + book.getQuantity() + ","
+                +book.getPublisherId() + ","
                 +book.getThreshold() + ")";
         return query;
     }
@@ -52,7 +54,7 @@ public class SQLCommands {
                 + user.PHONENUMBER + " = " + "\"" + user.getPhoneNumber() + "\","
                 + user.SHIPPINGADDRESS + " = " + "\"" + user.getShippingAddress() + "\","
                 + user.PASSWORD + " = " + "\"" + user.getPassword() + "\","
-                + user.PROMOTED + " = " + user.isPromoted() + ")"
+                + user.PROMOTED + " = " + user.isPromoted()
                 + " WHERE USER." + user.USERID + " = "  + user.getUserId() ;
         return query;
     }
@@ -119,15 +121,17 @@ public class SQLCommands {
         if(searchMap.isEmpty()) {
             return null;
         }
+        //todo el search 5rban wel joins
+        //TODO tany el search 5arban from Islam
         String query = "SELECT BOOK.book_id , BOOK.title , BOOK.pub_year," +
-                " Book.selling_price ,Book.category , BOOK.quantity , BOOK.publisher_id , BOOK.threshold " +
-                "FROM BOOK,PUBLISHER,AUTHOR ";
+                " BOOK.selling_price ,BOOK.category , BOOK.quantity , BOOK.publisher_id , BOOK.threshold " +
+                "FROM BOOK WHERE";
                 if(searchMap.containsKey("publisher_name")) {
-                    query+= "WHERE PUBLISHER.name = " + searchMap.get("publisher_name");
-                } else if(searchMap.containsKey("author_name")) {
-                    query+= " AND AUTHOR.name = "+ searchMap.get("author_name");
-                } else if (searchMap.containsKey("category")) {
-                    query+= " AND BOOK.category = "+ searchMap.get("author_name");
+                    query+= " PUBLISHER.name = \"" + searchMap.get("publisher_name") + "\"";
+                } if(searchMap.containsKey("author_name")) {
+                    query+= " AND Author.name = \"" + searchMap.get("author_name") +"\"";
+                } if (searchMap.containsKey("category")) {
+                    query+= " BOOK.category = \""+ searchMap.get("category") + "\"";
                 }
         return query;
     }
@@ -161,6 +165,11 @@ public class SQLCommands {
 
     public String getUsersByPage(int pageNumber, int limit) {
         String query = "SELECT * FROM USER LIMIT " + pageNumber*limit+ " , " +limit+"";
+        return query;
+    }
+
+    public String emptyCart(int userId) {
+        String query = "DELETE FROM CART WHERE user_id = " + userId;
         return query;
     }
 }

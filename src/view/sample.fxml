@@ -58,7 +58,7 @@
     <TextField fx:id="searchAuthorTextbox" layoutX="118.0" layoutY="509.0" prefHeight="35.1328125" prefWidth="204.99997792968497" promptText="Search Authors" visible="false" />
     <TextField fx:id="searchTitleTextbox" layoutX="340.0" layoutY="509.0" prefHeight="35.1328125" prefWidth="204.99997792968497" promptText="Search Titles" visible="false" />
     <TextField fx:id="searchCategoryTextbox" layoutX="563.0" layoutY="509.0" prefHeight="35.1328125" prefWidth="194.99997792968497" promptText="Search Categories" visible="false" />
-    <Button fx:id="searchButton" layoutX="180.0" layoutY="556.0" minHeight="26.1328125" mnemonicParsing="false" prefHeight="26.1328125" prefWidth="533.00022207031" style="-fx-background-color : #613826;" text="search library" textFill="WHITE" visible="false">
+    <Button fx:id="searchButton" layoutX="180.0" layoutY="556.0" minHeight="26.1328125" onAction="#clickSearch" mnemonicParsing="false" prefHeight="26.1328125" prefWidth="533.00022207031" style="-fx-background-color : #613826;" text="search library" textFill="WHITE" visible="false">
       <font>
         <Font size="15.0" />
       </font>
