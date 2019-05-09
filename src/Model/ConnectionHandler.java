@@ -6,14 +6,29 @@ import java.sql.*;
 
 public class ConnectionHandler {
 
-    java.sql.Connection con;
+    java.sql.Connection con = null;
+    private static ConnectionHandler instance = null;
+    private ConnectionHandler(){};
+
+    public static ConnectionHandler getInstance() {
+        if (instance == null) {
+            instance = new ConnectionHandler();
+        }
+        return instance;
+    }
 
     public void startConnection() throws SQLException, ClassNotFoundException {
         Class.forName("com.mysql.jdbc.Driver");
         con = DriverManager.getConnection(
                 "jdbc:mysql://localhost:3306/book_store","akrammoussa","password");
+        return;
     }
-
+    public Connection getConnection() throws SQLException, ClassNotFoundException {
+        if(con == null) {
+            startConnection();
+        }
+        return con;
+    }
     public void closeConnection() throws SQLException {
         con.close();
     }
@@ -49,5 +64,17 @@ public class ConnectionHandler {
         }
         statement.execute();
         return true;
+    }
+
+    public boolean prepareCallForAddToCart(int bookId, int userId, int quantity) throws SQLException{
+        CallableStatement statement;
+        String query ="{call add_to_cart(?,?,?)}";
+        statement = con.prepareCall(query);
+        statement.setInt(1,bookId);
+        statement.setInt(2,userId);
+        statement.setInt(3,quantity);
+        statement.execute();
+        return true;
+
     }
 }

@@ -1,11 +1,19 @@
+create table if not exists AUTHOR
+(
+  author_id int auto_increment
+  constraint `PRIMARY`
+  primary key,
+  name      varchar(50) not null
+);
+
 create table if not exists PUBLISHER
 (
-  publisher_id int         not null,
+  publisher_id int auto_increment
+  constraint `PRIMARY`
+  primary key,
   name         varchar(50) not null,
   phone        varchar(20) null,
-  address      varchar(50) null,
-  constraint `PRIMARY`
-  primary key (publisher_id)
+  address      varchar(50) null
 );
 
 create table if not exists BOOK
@@ -22,18 +30,22 @@ create table if not exists BOOK
   primary key (book_id),
   constraint BOOK_title_uindex
   unique (title),
-  constraint BOOK_PUBLISHER_publisher_id_fk
+  constraint BOOK_PUBLISHER_Name_fk
   foreign key (publisher_id) references PUBLISHER (publisher_id)
     on update cascade
+    on delete cascade
 );
 
-create table if not exists Author
+create table if not exists AUTHORED_BY
 (
-  Name      varchar(50) not null,
-  Author_id int         not null,
-  book_id   int         not null,
+  author_id int not null,
+  book_id   int not null,
   constraint `PRIMARY`
-  primary key (book_id, Author_id),
+  primary key (book_id, author_id),
+  constraint AUTHORED_BY_AUTHORS_author_id_fk
+  foreign key (author_id) references AUTHOR (author_id)
+    on update cascade
+    on delete cascade,
   constraint Author_BOOK_Book_id_fk
   foreign key (book_id) references BOOK (book_id)
     on update cascade
@@ -201,6 +213,22 @@ create table if not exists SALES
     on delete cascade
 );
 
+create procedure add_to_cart(IN book_id int, IN user_id int, IN quantity int)
+  BEGIN
+    IF (EXISTS(SELECT *
+               FROM CART
+               WHERE CART.book_id = book_id
+                 AND CART.user_id = user_id))
+    then
+      UPDATE CART
+      set CART.quantity = CART.quantity + quantity
+      where CART.book_id = book_id
+        AND CART.user_id = user_id;
+    ELSE
+      INSERT into CART values (book_id, user_id, quantity);
+    end if;
+  END;
+
 create function book_quantity(id int)
   returns int
   BEGIN
@@ -269,5 +297,4 @@ create procedure sell(IN book_id int, IN user_id int, IN quantity int)
       commit;
     end if;
   END;
-
 

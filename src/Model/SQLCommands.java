@@ -1,9 +1,6 @@
 package Model;
 
-import Entites.Book;
-import Entites.CartElement;
-import Entites.Order;
-import Entites.User;
+import Entites.*;
 
 import java.sql.SQLData;
 import java.util.HashMap;
@@ -22,7 +19,7 @@ public class SQLCommands {
     }
 
     public String insertBook(Book book){
-        String query = "INSER INTO BOOK VALUES ("
+        String query = "INSERT INTO BOOK VALUES ("
                 +book.getBookId() + ","
                 + "\"" + book.getTitle() + "\","
                 +"\"" + book.getPubYear() + "\","
@@ -117,44 +114,58 @@ public class SQLCommands {
         return query;
     }
 
-    public String searchForBooks(HashMap<String, String> searchMap) {
+    public String getWhereClauseBooks(HashMap<String, String> searchMap) {
         if(searchMap.isEmpty()) {
-            return null;
+            return "FROM BOOK ";
         }
-        //todo el search 5rban wel joins
-        //TODO tany el search 5arban from Islam
-        String query = "SELECT BOOK.book_id , BOOK.title , BOOK.pub_year," +
-                " BOOK.selling_price ,BOOK.category , BOOK.quantity , BOOK.publisher_id , BOOK.threshold " +
-                "FROM BOOK WHERE";
+        String query =
+                "FROM BOOK, PUBLISHER, AUTHORED_BY, AUTHOR WHERE BOOK.publisher_id = PUBLISHER.publisher_id AND"+
+                "BOOK.book_id = AUTHORED_BY.book_id AND AUTHORED_BY.author_id = AUTHOR.author_id ";
                 if(searchMap.containsKey("publisher_name")) {
-                    query+= " PUBLISHER.name = \"" + searchMap.get("publisher_name") + "\"";
-                } if(searchMap.containsKey("author_name")) {
-                    query+= " AND Author.name = \"" + searchMap.get("author_name") +"\"";
-                } if (searchMap.containsKey("category")) {
-                    query+= " BOOK.category = \""+ searchMap.get("category") + "\"";
+                    query+= "AND PUBLISHER.name = \"" + searchMap.get("publisher_name") + "\" ";
+                }
+                if(searchMap.containsKey("author_name")) {
+                    query+= "AND Author.name = \"" + searchMap.get("author_name") +"\" ";
+                }
+                if (searchMap.containsKey("category")) {
+                    query+= "AND BOOK.category = \""+ searchMap.get("category") + "\" ";
                 }
         return query;
     }
 
     public String getBookById(int bookId) {
-        String query = "SELECT * FROM BOOK WHERE BOOK.book_id = "
-                + bookId;
+//        FROM BOOK, PUBLISHER, AUTHORED_BY, AUTHOR WHERE BOOK.publisher_id = PUBLISHER.publisher_id AND"+
+//        "BOOK.book_id = AUTHORED_BY.book_id AND AUTHORED_BY.author_id = AUTHOR.author_id
+        String query = "SELECT BOOK.book_id , BOOK.title , BOOK.pub_year,BOOK.selling_price ,BOOK.category ," +
+                " BOOK.quantity , BOOK.publisher_id , BOOK.threshold ,AUTHOR.author_name , PUBLISHER.publisher_name" +
+                " FROM BOOK,AUTHOR,AUTHORED_BY,PUBLISHER WHERE BOOK.book_id = "
+                + bookId +"AND BOOK.publisher_id = PUBLISHER.publisher_id AND"+
+        "BOOK.book_id = AUTHORED_BY.book_id AND AUTHORED_BY.author_id = AUTHOR.author_id";
         return query;
     }
 
     public String getBookByTitle(String title) {
-        String query = "SELECT * FROM BOOK WHERE BOOK.title = \" "
-                + title + "\"" ;
+        String query = "SELECT BOOK.book_id , BOOK.title , BOOK.pub_year,BOOK.selling_price ,BOOK.category ," +
+                " BOOK.quantity , BOOK.publisher_id , BOOK.threshold ,AUTHOR.author_name , PUBLISHER.publisher_name\" +\n" +
+                "  FROM BOOK,AUTHOR,AUTHORED_BY,PUBLISHER WHERE BOOK.title =  \""
+                + title + "\" AND BOOK.publisher_id = PUBLISHER.publisher_id AND"+
+                "BOOK.book_id = AUTHORED_BY.book_id AND AUTHORED_BY.author_id = AUTHOR.author_id";
         return query;
     }
 
-    public String getBooksByPage(int pageNumber, int limit) {
-        String query = "SELECT * FROM BOOK LIMIT " + pageNumber*limit+ " , " +limit+"";
+    public String getBooksByPage(int pageNumber, int limit, HashMap<String , String> searchMap) {
+//        String query = "SELECT * FROM BOOK LIMIT " + pageNumber*limit+ " , " +limit+"";
+        String whereClause = getWhereClauseBooks(searchMap);
+        String query = "SELECT BOOK.book_id , BOOK.title , BOOK.pub_year," +
+                " BOOK.selling_price ,BOOK.category , BOOK.quantity , BOOK.publisher_id , BOOK.threshold "
+                +whereClause+" LIMIT " + pageNumber*limit+ " , " +limit+"";
+
         return query;
     }
 
-    public String getNumberOfPagesOfBooks(String key) {
-        String query = "SELECT COUNT AS \"" + key + "\" FROM BOOK GROUP BY book_id";
+    public String getNumberOfPagesOfBooks(String key, HashMap<String , String> searchMap) {
+        String whereClause = getWhereClauseBooks(searchMap);
+        String query = "SELECT COUNT AS \"" + key + "\" " + whereClause + " GROUP BY book_id";
         return query;
     }
 
@@ -170,6 +181,54 @@ public class SQLCommands {
 
     public String emptyCart(int userId) {
         String query = "DELETE FROM CART WHERE user_id = " + userId;
+        return query;
+    }
+
+    public String getAllPublishers() {
+        String query = "SELECT * FROM PUBLISHER";
+        return query;
+    }
+
+    public String insertPublisher(Publisher publisher) {
+        String query = "INSERT INTO PUBLISHER VALUES ("
+                + "publisher_id,"
+                + "\"" + publisher.getName() + "\","
+                +"\"" + publisher.getPhone() + "\","
+                + "\"" + publisher.getAddress() + "\")";
+        return query;
+    }
+
+    public String getNumberOfPagesOfPublishers(String key) {
+        String query = "SELECT COUNT AS \"" + key + "\" FROM PUBLISHER GROUP BY publisher_id";
+        return query;
+    }
+
+    public String getPublishersByPage(int pageNumber, int limit) {
+        String query = "SELECT * FROM PUBLISHER LIMIT " + pageNumber*limit+ " , " +limit+"";
+        return query;
+    }
+
+    public String getNumberOfPagesOfAuthors(String key) {
+        String query = "SELECT COUNT AS \"" + key + "\" FROM AUTHOR GROUP BY author_id";
+        return query;
+    }
+
+    public String getAuthorsByPage(int pageNumber, int limit) {
+        String query = "SELECT * FROM AUTHOR LIMIT " + pageNumber*limit+ " , " +limit+"";
+        return query;
+    }
+
+    public String insertAuthor(Author author) {
+        String query = "INSERT INTO AUTHOR VALUES ("
+                + "author_id,"
+                + "\"" + author.getName() + "\")";
+        return query;
+    }
+
+    public String setAuthoredBy(int authorId, int bookId) {
+        String query = "INSERT INTO AUTHORED_BY VALUES ("
+                + authorId + ","
+                + bookId +")";
         return query;
     }
 }
