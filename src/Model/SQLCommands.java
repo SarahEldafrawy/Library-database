@@ -10,7 +10,6 @@ public class SQLCommands {
     public String selectFromBooks(int limit , int pageNumber){
         String query = "SELECT * FROM BOOK LIMIT" + limit*pageNumber + "," + limit;
         return query;
-
     }
     public String logInUser(String email, String password){
         String query = "SELECT * FROM USER WHERE USER.email_address = \""
@@ -131,8 +130,8 @@ public class SQLCommands {
                         where += " AND ";
                     }
                     from+= ", AUTHORED_BY, AUTHOR ";
-                    where+= " AND BOOK.book_id = AUTHORED_BY.book_id  AND  AUTHORED_BY.author_id = AUTHOR.author_id "
-                +" Author.name = \"" + searchMap.get("author_name") +"\" ";
+                    where+= " BOOK.book_id = AUTHORED_BY.book_id  AND  AUTHORED_BY.author_id = AUTHOR.author_id AND "
+                +" AUTHOR.name = \"" + searchMap.get("author_name") +"\" ";
                     flag = true;
                 }
                 if (searchMap.containsKey("category")) {
