@@ -11,9 +11,8 @@ public interface IModel {
     User logIn(String name, String password);
     boolean updateUser(User user);
     ArrayList<Book> getStartBooks();
-    int getNumberOfPagesOfBooks();
-    ArrayList<Book> getBooksByPage(int pageNumber, int limit);
-    ArrayList<Book> searchForBooks(HashMap<String,String> searchMap);
+    int getNumberOfPagesOfBooks(HashMap<String, String> searchMap);
+    ArrayList<Book> getBooksByPage(int pageNumber, int limit,HashMap<String, String> searchMap);
     boolean addToCart(int bookId, int quantity, int userId);
     boolean removeFromCart(int bookId, int userId);
     boolean emptyCart(int userId);

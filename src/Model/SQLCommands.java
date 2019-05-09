@@ -1,9 +1,6 @@
 package Model;
 
-import Entites.Book;
-import Entites.CartElement;
-import Entites.Order;
-import Entites.User;
+import Entites.*;
 
 import java.sql.SQLData;
 import java.util.HashMap;
@@ -117,31 +114,23 @@ public class SQLCommands {
         return query;
     }
 
-    public String searchForBooks(HashMap<String, String> searchMap) {
+    public String getWhereClauseBooks(HashMap<String, String> searchMap) {
         if(searchMap.isEmpty()) {
-            return null;
+            return "FROM BOOK ";
         }
         //todo el search 5rban wel joins
         //TODO tany el search 5arban from Islam
-        String query = "SELECT BOOK.book_id , BOOK.title , BOOK.pub_year," +
-                " BOOK.selling_price ,BOOK.category , BOOK.quantity , BOOK.publisher_id , BOOK.threshold " +
-                "FROM BOOK WHERE";
-        Boolean flag = true;
+        String query =
+                "FROM BOOK, PUBLISHER, AUTHORED_BY, AUTHOR WHERE BOOK.publisher_id = PUBLISHER.publisher_id AND"+
+                "BOOK.book_id = AUTHORED_BY.book_id AND AUTHORED_BY.author_id = AUTHOR.author_id ";
                 if(searchMap.containsKey("publisher_name")) {
-                    query+= " PUBLISHER.name = \"" + searchMap.get("publisher_name") + "\"";
-                    flag = false;
-                } if(searchMap.containsKey("author_name")) {
-                    if(!flag) {
-                       query+= " AND";
-                    }
-                    query+= " Author.name = \"" + searchMap.get("author_name") +"\"";
-                    flag = false;
-                } if (searchMap.containsKey("category")) {
-                    if(!flag) {
-                        query+= " AND";
-                    }
-                    query+= " BOOK.category = \""+ searchMap.get("category") + "\"";
-                    flag = false;
+                    query+= "AND PUBLISHER.name = \"" + searchMap.get("publisher_name") + "\" ";
+                }
+                if(searchMap.containsKey("author_name")) {
+                    query+= "AND Author.name = \"" + searchMap.get("author_name") +"\" ";
+                }
+                if (searchMap.containsKey("category")) {
+                    query+= "AND BOOK.category = \""+ searchMap.get("category") + "\" ";
                 }
         return query;
     }
@@ -158,13 +147,19 @@ public class SQLCommands {
         return query;
     }
 
-    public String getBooksByPage(int pageNumber, int limit) {
-        String query = "SELECT * FROM BOOK LIMIT " + pageNumber*limit+ " , " +limit+"";
+    public String getBooksByPage(int pageNumber, int limit, HashMap<String , String> searchMap) {
+//        String query = "SELECT * FROM BOOK LIMIT " + pageNumber*limit+ " , " +limit+"";
+        String whereClause = getWhereClauseBooks(searchMap);
+        String query = "SELECT BOOK.book_id , BOOK.title , BOOK.pub_year," +
+                " BOOK.selling_price ,BOOK.category , BOOK.quantity , BOOK.publisher_id , BOOK.threshold "
+                +whereClause+" LIMIT " + pageNumber*limit+ " , " +limit+"";
+
         return query;
     }
 
-    public String getNumberOfPagesOfBooks(String key) {
-        String query = "SELECT COUNT AS \"" + key + "\" FROM BOOK GROUP BY book_id";
+    public String getNumberOfPagesOfBooks(String key, HashMap<String , String> searchMap) {
+        String whereClause = getWhereClauseBooks(searchMap);
+        String query = "SELECT COUNT AS \"" + key + "\" " + whereClause + " GROUP BY book_id";
         return query;
     }
 
@@ -221,6 +216,13 @@ public class SQLCommands {
         String query = "INSERT INTO AUTHOR VALUES ("
                 + "author_id,"
                 + "\"" + author.getName() + "\")";
+        return query;
+    }
+
+    public String setAuthoredBy(int authorId, int bookId) {
+        String query = "INSERT INTO AUTHORED_BY VALUES ("
+                + authorId + ","
+                + bookId +")";
         return query;
     }
 }

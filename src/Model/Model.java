@@ -71,9 +71,9 @@ public class Model implements IModel {
 
     }
     @Override
-    public int getNumberOfPagesOfBooks(){
+    public int getNumberOfPagesOfBooks(HashMap<String, String> searchMap){
         final String key = "count";
-        String query = sQlCommands.getNumberOfPagesOfBooks(key);
+        String query = sQlCommands.getNumberOfPagesOfBooks(key, searchMap);
         return getNumberOfPages(key, query);
     }
 
@@ -90,8 +90,8 @@ public class Model implements IModel {
         return numberOfPages;
     }
 
-    public ArrayList<Book> getBooksByPage(int pageNumber, int limit){
-        String query = sQlCommands.getBooksByPage(pageNumber , limit);
+    public ArrayList<Book> getBooksByPage(int pageNumber, int limit, HashMap<String, String> searchMap){
+        String query = sQlCommands.getBooksByPage(pageNumber , limit, searchMap);
         return getBooks(query);
     }
 
@@ -108,13 +108,8 @@ public class Model implements IModel {
 
 
     @Override
-    public ArrayList<Book> searchForBooks(HashMap<String, String> searchMap) {
-        String query = sQlCommands.searchForBooks(searchMap);
-        return getBooks(query);
-    }
-
-    @Override
     public Book getBookById(int bookId){
+        //TODO join with publisher and authors and add them in object book
         String query = sQlCommands.getBookById(bookId);
         return getBook(query);
 
@@ -133,12 +128,14 @@ public class Model implements IModel {
 
     @Override
     public Book getBookByTitle(String title){
+        //TODO join with publisher and authors and add them in object book
         String query = sQlCommands.getBookByTitle(title);
         return getBook(query);
 
     }
 
     private Book getBook(String query) {
+        //TODO join with publisher and authors and add them in object book
         Book book = null;
         try {
             ResultSet resultSet = connectionHandler.executeQuery(query);
@@ -286,8 +283,21 @@ public class Model implements IModel {
 
     @Override
     public boolean addBook(Book book) {
+        if (book.getAuthorsIds() == null){
+            return false;
+        }
         String query = sQlCommands.insertBook(book);
-        return update(query);
+        boolean insertion = update(query);
+        insertAuthorsFromBook(book);
+        return insertion ;
+    }
+
+    private void insertAuthorsFromBook(Book book) {
+        ArrayList<Integer> authors = book.getAuthorsIds();
+        for (int i = 0; i < authors.size(); i++) {
+            String authoredByQuery = sQlCommands.setAuthoredBy( authors.get(i), book.getBookId());
+            update(authoredByQuery);
+        }
     }
 
     @Override
