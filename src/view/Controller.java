@@ -37,6 +37,7 @@ public class Controller {
     ArrayList<Book> allBooks;
     ArrayList<Book> cartBooks;
     User currentUser;
+    HashMap<String, String> searchElements;
 
 
     TextField currentCount[];
@@ -319,6 +320,7 @@ public class Controller {
             @Override
             public void handle(ActionEvent event) {
                 //todo show single book page search by id
+                showCertainBook(database.getBookById(Integer.valueOf(id.getText())));
             }
         });
 
@@ -330,6 +332,7 @@ public class Controller {
             @Override
             public void handle(ActionEvent event) {
                 //todo show single book page search by title
+                showCertainBook(database.getBookByTitle(title.getText()));
             }
         });
 
@@ -342,14 +345,14 @@ public class Controller {
     @FXML
     void getNextPage(ActionEvent event) {
         showMarket();
-        prepareBooks(database.getBooksByPage(++pageNum, LIMIT));
+        prepareBooks(database.getBooksByPage(++pageNum, LIMIT, new HashMap<>()));
         pageNumLabel.setText(String.valueOf(pageNum));
     }
     @FXML
     void getPrevPage(ActionEvent event) {
         showMarket();
         if (pageNum != 0) {
-            prepareBooks(database.getBooksByPage(--pageNum, LIMIT));
+            prepareBooks(database.getBooksByPage(--pageNum, LIMIT, new HashMap<>()));
         }
         pageNumLabel.setText(String.valueOf(pageNum));
     }
@@ -386,7 +389,7 @@ public class Controller {
         showMarket();
         pageNum = 0;
         pageNumLabel.setText(String.valueOf(pageNum));
-        prepareBooks(database.getBooksByPage(pageNum, LIMIT));
+        prepareBooks(database.getBooksByPage(pageNum, LIMIT, new HashMap<>()));
     }
     @FXML
     void clickLogout(ActionEvent event) {
@@ -832,7 +835,7 @@ public class Controller {
     @FXML
     void clickSearch(ActionEvent event) {
         Book book = new Book();
-        HashMap<String, String> searchElements = new HashMap<>();
+        searchElements = new HashMap<>();
         if(!searchAuthorTextbox.getText().equals("")) {
             searchElements.put(book.AUTHOR_NAME, searchAuthorTextbox.getText());
         }
@@ -843,7 +846,8 @@ public class Controller {
             searchElements.put(book.TITLE, searchTitleTextbox.getText());
         }
         if(searchElements.size() > 0) {
-            allBooks = database.searchForBooks(searchElements);
+            pageNum = 0;
+            allBooks = database.getBooksByPage(pageNum, LIMIT, searchElements);
             showMarket();
             if(allBooks!=null) {
                 prepareBooks(allBooks);
@@ -1140,6 +1144,7 @@ public class Controller {
         passwordTextbox.setVisible(false);
     }
     private void showCertainBook(Book book) {
+        searchElements = new HashMap<>();
         Pane container = new Pane();
         Scene secondScene = new Scene(container, 600, 300);
         secondScene.getStylesheets().add("style.css");
@@ -1257,12 +1262,14 @@ public class Controller {
         newWindow.show();
     }
     private void establishNewConncetion() throws SQLException, ClassNotFoundException {
-       // database = new Model();
+        pageNum = 0;
+        searchElements = new HashMap<>();
+        database = new Model();
         allBooks = new ArrayList<Book>();
         currentUser = new User();
-        //allBooks = database.getBooksByPage(pageNum,LIMIT);
+        allBooks = database.getBooksByPage(pageNum, LIMIT, new HashMap<>());
         cartBooks = new ArrayList<Book>();
-
+        /*
         currentUser.setFirstName("Islam");
         currentUser.setLastName("Gamal");
         currentUser.setEmailAddress("islamgamal77@gmail.com");
@@ -1281,8 +1288,7 @@ public class Controller {
             book.setTitle("Book Number " + i);
             book.setQuantity((int)(Math. random() * 50 + 1));
             allBooks.add(book);
-
         }
-        showCertainBook(allBooks.get(0));
+        */
     }
 }
