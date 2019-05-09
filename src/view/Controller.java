@@ -29,6 +29,8 @@ import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
+import javax.swing.*;
+
 public class Controller {
 
     Model database;
@@ -39,7 +41,7 @@ public class Controller {
 
     TextField currentCount[];
     Button addToCartButton[];
-    int HORIZONTAL_SHIFT = 800/3;
+    int HORIZONTAL_SHIFT = 1130/3;
     int LIMIT = 50;
     boolean addedToCart = false;
     boolean isNowCart = false;
@@ -95,7 +97,16 @@ public class Controller {
     private PasswordField rPasswordTextbox;
 
     @FXML
+    private Label pageNumLabel;
+
+    @FXML
     private Button registerButton;
+
+    @FXML
+    private Button getAuthorsButtonToolbar;
+
+    @FXML
+    private Button addAuthorButtonToolbar;
 
     @FXML
     Label errorLoginLabel;
@@ -137,6 +148,12 @@ public class Controller {
     private CheckBox isManagerCheckBox;
 
     @FXML
+    private Button publishersButtonToolbar;
+
+    @FXML
+    private Button addPublisherButtonToolbar;
+
+    @FXML
     private PasswordField secretCodeTextField;
 
     @FXML
@@ -156,6 +173,8 @@ public class Controller {
 
     @FXML
     private ImageView validIcon;
+
+
 
     @FXML
     void loginClicked(MouseEvent event) {
@@ -184,7 +203,6 @@ public class Controller {
             showLogin();
         }
     }
-
     @FXML
     void registerClicked(MouseEvent event) {
         if(rEmailTextbox.isVisible()) {
@@ -225,8 +243,6 @@ public class Controller {
             showRegister();
         }
     }
-
-
     @FXML
     void checkPasswordMatch(Event event) {
         String password = rPasswordTextbox.getText();
@@ -239,7 +255,6 @@ public class Controller {
             notValidIcon.setVisible(true);
         }
     }
-
     @FXML
     void validateManagerCode(KeyEvent event) {
         String password = secretCodeTextField.getText();
@@ -249,12 +264,11 @@ public class Controller {
             validIconManager.setVisible(false);
         }
     }
-
     @FXML
     void increaseBPP(MouseEvent event) {
         if(BOOKS_PER_ROW != 5) {
             BOOKS_PER_ROW++;
-            HORIZONTAL_SHIFT = (800 / BOOKS_PER_ROW);
+            HORIZONTAL_SHIFT = (1130 / BOOKS_PER_ROW);
             if(isNowCart) {
                 prepareBooks(cartBooks);
             } else {
@@ -262,7 +276,6 @@ public class Controller {
             }
         }
     }
-
     @FXML
     void findOneBook(ActionEvent event) {
         Pane container = new Pane();
@@ -305,7 +318,7 @@ public class Controller {
         search1.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                //todo show single book page
+                //todo show single book page search by id
             }
         });
 
@@ -316,7 +329,7 @@ public class Controller {
         search2.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                //todo show single book page
+                //todo show single book page search by title
             }
         });
 
@@ -326,11 +339,11 @@ public class Controller {
         newWindow.setY(259);
         newWindow.show();
     }
-
     @FXML
     void getNextPage(ActionEvent event) {
         showMarket();
         prepareBooks(database.getBooksByPage(++pageNum, LIMIT));
+        pageNumLabel.setText(String.valueOf(pageNum));
     }
     @FXML
     void getPrevPage(ActionEvent event) {
@@ -338,13 +351,13 @@ public class Controller {
         if (pageNum != 0) {
             prepareBooks(database.getBooksByPage(--pageNum, LIMIT));
         }
+        pageNumLabel.setText(String.valueOf(pageNum));
     }
-
     @FXML
     void decreaseBPP(MouseEvent event) {
         if(BOOKS_PER_ROW != 1) {
             BOOKS_PER_ROW--;
-            HORIZONTAL_SHIFT = (800 / BOOKS_PER_ROW);
+            HORIZONTAL_SHIFT = (1130 / BOOKS_PER_ROW);
             if(isNowCart) {
                 prepareBooks(cartBooks);
             } else {
@@ -352,7 +365,6 @@ public class Controller {
             }
         }
     }
-
     @FXML
     void clickCart(ActionEvent event) {
         isNowCart = true;
@@ -364,26 +376,18 @@ public class Controller {
 
         checkoutButton.setVisible(true);
     }
-
-    @FXML
-    void backToShop(ActionEvent event) {
-        showMarket();
-        isNowCart = false;
-    }
-
     @FXML
     void proceedToCheckout(ActionEvent event) {
 
     }
-
     @FXML
     void clickHome(ActionEvent event) throws InterruptedException {
         isNowCart = false;
         showMarket();
         pageNum = 0;
+        pageNumLabel.setText(String.valueOf(pageNum));
         prepareBooks(database.getBooksByPage(pageNum, LIMIT));
     }
-
     @FXML
     void clickLogout(ActionEvent event) {
         database.emptyCart(currentUser.getUserId());
@@ -391,11 +395,66 @@ public class Controller {
         cartBooks = null;
         showLogin();
     }
-
     @FXML
-    void clickPlaceOrder(ActionEvent event) {
-    }
+    void addPublisher(ActionEvent event) {
+        Pane container = new Pane();
+        Scene secondScene = new Scene(container, 442.0, 296);
+        secondScene.getStylesheets().add("style.css");
+        Stage newWindow = new Stage();
+        newWindow.setTitle("Add publisher");
+        newWindow.setScene(secondScene);
 
+        Image image = null;
+        try {
+            image = new Image(new FileInputStream(
+                    this.getClass().getProtectionDomain().getCodeSource().getLocation().getPath()
+                            + "../../../src/view/Resources/images/libraryy.jpg"));
+        } catch (FileNotFoundException e1) {
+            e1.printStackTrace();
+        }
+        ImageView wallpaper = new ImageView(image);
+        wallpaper.setFitHeight(297.5);
+        wallpaper.setFitWidth(442.0);
+        wallpaper.setX(0);
+        wallpaper.setY(0);
+        container.getChildren().add(wallpaper);
+        VBox vbx = new VBox();
+        vbx.setMinWidth(442);
+        vbx.setMinHeight(297.5);
+        vbx.setAlignment(Pos.CENTER);
+
+        TextField pubName = new TextField();
+        pubName.setPromptText("Enter the name of the publisher");
+        pubName.setFocusTraversable(false);
+
+        TextField pubAddress = new TextField();
+        pubAddress.setPromptText("Address of the publisher");
+        pubAddress.setFocusTraversable(false);
+
+        TextField phone = new TextField();
+        phone.setPromptText("Phone Number");
+        phone.setFocusTraversable(false);
+
+        Button done = new Button("Add Publisher");
+        done.setFocusTraversable(true);
+        done.getStyleClass().add("mybutton");
+        done.setTextFill(Color.WHITE);
+        done.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                //todo create new publisher and add it to database
+                ((Node)event.getSource()).getScene().getWindow().hide();
+            }
+        });
+        vbx.getChildren().addAll(pubName, pubAddress, phone, done);
+        container.getChildren().add(vbx);
+        newWindow.setX(582);
+        newWindow.setY(259);
+        newWindow.show();
+    }
+    @FXML
+    void viewPublishers(ActionEvent event) {
+    }
     @FXML
     void addBook(ActionEvent event) {
         Pane container = new Pane();
@@ -473,7 +532,6 @@ public class Controller {
         newWindow.setY(259);
         newWindow.show();
     }
-
     @FXML
     void clickProfile(ActionEvent event) {
         Pane container = new Pane();
@@ -705,15 +763,12 @@ public class Controller {
 
         newWindow.show();
     }
-
     @FXML
     void clickViewOrders(ActionEvent event) {
     }
-
     @FXML
     void clickViewUsers(ActionEvent event) {
     }
-
     @FXML
     void checkedManagerBox(ActionEvent event) {
         if(isManagerCheckBox.isSelected()) {
@@ -722,7 +777,58 @@ public class Controller {
             secretCodeTextField.setVisible(false);
         }
     }
+    @FXML
+    void viewAuthors(ActionEvent event) {
+    }
+    @FXML
+    void addAuthor(ActionEvent event) {
+        Pane container = new Pane();
+        Scene secondScene = new Scene(container, 442.0, 296);
+        secondScene.getStylesheets().add("style.css");
+        Stage newWindow = new Stage();
+        newWindow.setTitle("Add Author");
+        newWindow.setScene(secondScene);
 
+        Image image = null;
+        try {
+            image = new Image(new FileInputStream(
+                    this.getClass().getProtectionDomain().getCodeSource().getLocation().getPath()
+                            + "../../../src/view/Resources/images/libraryy.jpg"));
+        } catch (FileNotFoundException e1) {
+            e1.printStackTrace();
+        }
+        ImageView wallpaper = new ImageView(image);
+        wallpaper.setFitHeight(297.5);
+        wallpaper.setFitWidth(442.0);
+        wallpaper.setX(0);
+        wallpaper.setY(0);
+        container.getChildren().add(wallpaper);
+        VBox vbx = new VBox();
+        vbx.setMinWidth(442);
+        vbx.setMinHeight(297.5);
+        vbx.setAlignment(Pos.CENTER);
+
+        TextField authorName = new TextField();
+        authorName.setPromptText("Enter the name of the author");
+        authorName.setFocusTraversable(false);
+
+        Button done = new Button("Add Author");
+        done.setFocusTraversable(true);
+        done.getStyleClass().add("mybutton");
+        done.setTextFill(Color.WHITE);
+        done.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                //todo create new author and add it to database
+                ((Node)event.getSource()).getScene().getWindow().hide();
+            }
+        });
+        vbx.getChildren().addAll(authorName, done);
+        container.getChildren().add(vbx);
+        newWindow.setX(582);
+        newWindow.setY(259);
+        newWindow.show();
+    }
     @FXML
     void clickSearch(ActionEvent event) {
         Book book = new Book();
@@ -763,6 +869,13 @@ public class Controller {
         addToCartButton = new Button[numberOfBooks];
         for(int i = 0; i < numberOfBooks; i++) {
             VBox container = new VBox();
+            container.setId(String.valueOf(i));
+            container.setOnMousePressed(new EventHandler<MouseEvent>() {
+                @Override
+                public void handle(MouseEvent event) {
+                    showCertainBook(allLibraryBooks.get(Integer.valueOf(((VBox)(event.getSource())).getId())));
+                }
+            });
             if(i%BOOKS_PER_ROW != 0 || i == 0) {
                 container.setLayoutX(xValue * HORIZONTAL_SHIFT + MARGIN);
                 container.setLayoutY(yValue * VERTICAL_SHIFT + MARGIN);
@@ -908,6 +1021,8 @@ public class Controller {
     }
     private void showLogin() {
         toolBar.setVisible(false);
+        pageNumLabel.setVisible(false);
+        isManagerCheckBox.setVisible(false);
         nextPageButton.setVisible(false);
         prevPageButton.setVisible(false);
         firstNameTextbox.setVisible(false);
@@ -932,12 +1047,12 @@ public class Controller {
         checkoutButton.setVisible(false);
 
         slogan.setVisible(false);
-        loginButton.setLayoutX(226);
-        loginButton.setLayoutY(458);
+        loginButton.setLayoutX(loginButton.getLayoutX());
+        loginButton.setLayoutY(437 + 160);
         loginButton.setVisible(true);
         registerButton.setVisible(true);
-        registerButton.setLayoutX(456);
-        registerButton.setLayoutY(458);
+        registerButton.setLayoutX(registerButton.getLayoutX());
+        registerButton.setLayoutY(437 + 160);
         emailTextbox.setVisible(true);
         passwordTextbox.setVisible(true);
     }
@@ -962,6 +1077,7 @@ public class Controller {
         registerButton.setVisible(false);
 
         labelInfo.setVisible(true);
+        pageNumLabel.setVisible(true);
         nextPageButton.setVisible(true);
         prevPageButton.setVisible(true);
         findCertainBook.setVisible(true);
@@ -973,6 +1089,19 @@ public class Controller {
             viewOrdersButtonToolbar.setVisible(true);
             viewReportButtonToolbar.setVisible(true);
             viewUsersButtonToolbar.setVisible(true);
+            getAuthorsButtonToolbar.setVisible(true);
+            addAuthorButtonToolbar.setVisible(true);
+            addPublisherButtonToolbar.setVisible(true);
+            publishersButtonToolbar.setVisible(true);
+        } else {
+            addPublisherButtonToolbar.setVisible(false);
+            publishersButtonToolbar.setVisible(false);
+            addBookButtonToolbar.setVisible(false);
+            viewOrdersButtonToolbar.setVisible(false);
+            viewReportButtonToolbar.setVisible(false);
+            getAuthorsButtonToolbar.setVisible(false);
+            getAuthorsButtonToolbar.setVisible(false);
+            addAuthorButtonToolbar.setVisible(false);
         }
         booksPane.setVisible(true);
         searchAuthorTextbox.setVisible(true);
@@ -988,10 +1117,10 @@ public class Controller {
         confirmPasswordTextbox.setVisible(true);
         telefonTextbox.setVisible(true);
         addressTextbox.setVisible(true);
-        loginButton.setLayoutX(226);
-        loginButton.setLayoutY(458);
-        registerButton.setLayoutX(456);
-        registerButton.setLayoutY(458);
+        loginButton.setLayoutX(loginButton.getLayoutX());
+        registerButton.setLayoutY(437 + 160);
+        registerButton.setLayoutX(registerButton.getLayoutX());
+        registerButton.setLayoutY(437 + 160);
         isManagerCheckBox.setVisible(true);
 
         nextPageButton.setVisible(false);
@@ -1010,22 +1139,139 @@ public class Controller {
         emailTextbox.setVisible(false);
         passwordTextbox.setVisible(false);
     }
+    private void showCertainBook(Book book) {
+        Pane container = new Pane();
+        Scene secondScene = new Scene(container, 600, 300);
+        secondScene.getStylesheets().add("style.css");
+        Stage newWindow = new Stage();
+        newWindow.setTitle("Book info");
+        newWindow.setScene(secondScene);
+
+        Image image = null;
+        try {
+            image = new Image(new FileInputStream(
+                    this.getClass().getProtectionDomain().getCodeSource().getLocation().getPath()
+                            + "../../../src/view/Resources/images/libraryy.jpg"));
+        } catch (FileNotFoundException e1) {
+            e1.printStackTrace();
+        }
+        ImageView wallpaper = new ImageView(image);
+        wallpaper.setFitHeight(300);
+        wallpaper.setFitWidth(600);
+        wallpaper.setX(0);
+        wallpaper.setY(0);
+        container.getChildren().add(wallpaper);
+        VBox vbx = new VBox();
+        String cssLayout2 =
+                "-fx-background-color : lightgrey;\n" +
+                        "-fx-border-color: brown;\n" +
+                        "-fx-border-insets: 5;\n" +
+                        "-fx-border-width: 2;\n" +
+                        "-fx-border-style: solid;\n";
+        vbx.setMaxWidth(500);
+        vbx.setMinWidth(600);
+        vbx.setMinHeight(300);
+        vbx.setMaxHeight(300);
+        vbx.setStyle(cssLayout2);
+        vbx.setSpacing(5);
+        vbx.setAlignment(Pos.CENTER);
+        //==========================================================================
+
+        String bookName = book.getTitle();
+        Label bookLabel = new Label(bookName);
+        bookLabel.setFont(Font.font("Cambria", 26));
+
+        Label dashes = new Label("------------------------------");
+        dashes.setFont(Font.font("Cambria", 23));
+
+        String pubYear = book.getPubYear();
+        HBox bookAuthor = new HBox();
+        bookAuthor.setAlignment(Pos.CENTER);
+        Label pubYear1 = new Label("pub year: ");
+        Label pubYear2 = new Label(pubYear);
+        pubYear1.setStyle("-fx-text-fill: grey ;");
+        pubYear1.setFont(Font.font("Cambria", 17));
+        pubYear2.setStyle("-fx-text-fill: brown ;") ;
+        pubYear2.setFont(Font.font("Cambria", 19));
+        bookAuthor.getChildren().addAll(pubYear1, pubYear2);
+
+        //todo make not pub id.. but pub name
+        String Pub = book.getPublisherId() + "";
+        HBox publisher = new HBox();
+        publisher.setAlignment(Pos.CENTER);
+        Label pub1 = new Label("Published by: ");
+        Label pub2 = new Label(Pub);
+        pub1.setStyle("-fx-text-fill: grey ;");
+        pub1.setFont(Font.font("Cambria", 17));
+        pub2.setStyle("-fx-text-fill: brown ;") ;
+        pub2.setFont(Font.font("Cambria", 19));
+        publisher.getChildren().addAll(pub1, pub2);
+
+        String categ = book.getCategory();
+        HBox category = new HBox();
+        category.setAlignment(Pos.CENTER);
+        Label cat1 = new Label("Category: ");
+        Label cat2 = new Label(categ);
+        cat1.setStyle("-fx-text-fill: grey ;");
+        cat1.setFont(Font.font("Cambria", 17));
+        cat2.setStyle("-fx-text-fill: brown ;") ;
+        cat2.setFont(Font.font("Cambria", 19));
+        category.getChildren().addAll(cat1, cat2);
+
+        String id = book.getBookId() + "";
+        HBox bookId = new HBox();
+        bookId.setAlignment(Pos.CENTER);
+        Label b1 = new Label("Book id: ");
+        Label b2 = new Label(id);
+        b1.setStyle("-fx-text-fill: grey ;");
+        b1.setFont(Font.font("Cambria", 17));
+        b2.setStyle("-fx-text-fill: brown ;") ;
+        b2.setFont(Font.font("Cambria", 19));
+        bookId.getChildren().addAll(b1, b2);
+
+        int quantity = book.getQuantity();
+        HBox count = new HBox();
+        count.setAlignment(Pos.CENTER);
+        Label count1 = new Label("Available in stock: ");
+        Label count2 = new Label(String.valueOf(quantity));
+        count1.setFont(Font.font("Cambria", 17));
+        count1.setStyle("-fx-text-fill: grey ;");
+        count2.setFont(Font.font("Cambria", 21));
+        count.getChildren().addAll(count1, count2);
+
+        float bookPrice = book.getSellingPrice();
+        HBox price = new HBox();
+        price.setAlignment(Pos.CENTER);
+        Label p1 = new Label("Price/book: LE ");
+        Label p2 = new Label(String.valueOf(bookPrice));
+        p1.setFont(Font.font("Cambria", 14));
+        p1.setStyle("-fx-text-fill: grey ;");
+        p2.setFont(Font.font("Cambria", 18));
+        p2.setStyle("-fx-text-fill: GREEN ;");
+        price.getChildren().addAll(p1, p2);
+        Label newLine = new Label("");
+        vbx.getChildren().addAll(bookLabel,dashes, bookId, category, publisher, count, price, bookAuthor, newLine);
+        container.getChildren().add(vbx);
+        newWindow.setX(582);
+        newWindow.setY(259);
+        newWindow.show();
+    }
     private void establishNewConncetion() throws SQLException, ClassNotFoundException {
-        database = new Model();
+       // database = new Model();
         allBooks = new ArrayList<Book>();
         currentUser = new User();
-        allBooks = database.getBooksByPage(pageNum,LIMIT);
+        //allBooks = database.getBooksByPage(pageNum,LIMIT);
         cartBooks = new ArrayList<Book>();
 
-        /*currentUser.setFirstName("Islam");
+        currentUser.setFirstName("Islam");
         currentUser.setLastName("Gamal");
         currentUser.setEmailAddress("islamgamal77@gmail.com");
         currentUser.setPromoted(true);
         currentUser.setShippingAddress("Alzorkani ST, Miami, Alexandria");
         currentUser.setPhoneNumber("(+20) 109-144-8249");
-        currentUser.setPassword("mypassword");*/
+        currentUser.setPassword("mypassword");
 
-        /*for(int i = 0; i < 20; i++) {
+        for(int i = 0; i < 20; i++) {
             Book book = new Book();
             book.setBookId(i);
             book.setCategory("Science");
@@ -1035,6 +1281,8 @@ public class Controller {
             book.setTitle("Book Number " + i);
             book.setQuantity((int)(Math. random() * 50 + 1));
             allBooks.add(book);
-        }*/
+
+        }
+        showCertainBook(allBooks.get(0));
     }
 }
