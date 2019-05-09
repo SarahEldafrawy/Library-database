@@ -6,14 +6,29 @@ import java.sql.*;
 
 public class ConnectionHandler {
 
-    java.sql.Connection con;
+    java.sql.Connection con = null;
+    private static ConnectionHandler instance = null;
+    private ConnectionHandler(){};
+
+    public static ConnectionHandler getInstance() {
+        if (instance == null) {
+            instance = new ConnectionHandler();
+        }
+        return instance;
+    }
 
     public void startConnection() throws SQLException, ClassNotFoundException {
         Class.forName("com.mysql.jdbc.Driver");
         con = DriverManager.getConnection(
                 "jdbc:mysql://localhost:3306/book_store","akrammoussa","password");
+        return;
     }
-
+    public Connection getConnection() throws SQLException, ClassNotFoundException {
+        if(con == null) {
+            startConnection();
+        }
+        return con;
+    }
     public void closeConnection() throws SQLException {
         con.close();
     }
