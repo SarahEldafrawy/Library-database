@@ -14,7 +14,7 @@ public class SQLCommands {
     }
     public String logInUser(String email, String password){
         String query = "SELECT * FROM USER WHERE USER.email_address = \""
-                + email + "\" AND USER.password = \"" + password + "\"";
+                + email + "\"  AND  USER.password = \"" + password + "\"";
         return query;
     }
 
@@ -119,37 +119,37 @@ public class SQLCommands {
             return "FROM BOOK ";
         }
         String query =
-                "FROM BOOK, PUBLISHER, AUTHORED_BY, AUTHOR WHERE BOOK.publisher_id = PUBLISHER.publisher_id AND"+
-                "BOOK.book_id = AUTHORED_BY.book_id AND AUTHORED_BY.author_id = AUTHOR.author_id ";
-                if(searchMap.containsKey("publisher_name")) {
-                    query+= "AND PUBLISHER.name = \"" + searchMap.get("publisher_name") + "\" ";
+                "FROM BOOK, PUBLISHER, AUTHORED_BY, AUTHOR WHERE BOOK.publisher_id = PUBLISHER.publisher_id  AND "+
+                "BOOK.book_id = AUTHORED_BY.book_id  AND  AUTHORED_BY.author_id = AUTHOR.author_id ";
+                if(searchMap.containsKey("name")) {
+                    query+= "  AND  PUBLISHER.name = \"" + searchMap.get("name") + "\" ";
                 }
-                if(searchMap.containsKey("author_name")) {
-                    query+= "AND Author.name = \"" + searchMap.get("author_name") +"\" ";
+                if(searchMap.containsKey("name")) {
+                    query+= "  AND  Author.name = \"" + searchMap.get("name") +"\" ";
                 }
                 if (searchMap.containsKey("category")) {
-                    query+= "AND BOOK.category = \""+ searchMap.get("category") + "\" ";
+                    query+= "  AND  BOOK.category = \""+ searchMap.get("category") + "\" ";
                 }
         return query;
     }
 
     public String getBookById(int bookId) {
-//        FROM BOOK, PUBLISHER, AUTHORED_BY, AUTHOR WHERE BOOK.publisher_id = PUBLISHER.publisher_id AND"+
-//        "BOOK.book_id = AUTHORED_BY.book_id AND AUTHORED_BY.author_id = AUTHOR.author_id
+//        FROM BOOK, PUBLISHER, AUTHORED_BY, AUTHOR WHERE BOOK.publisher_id = PUBLISHER.publisher_id  AND "+
+//        "BOOK.book_id = AUTHORED_BY.book_id  AND  AUTHORED_BY.author_id = AUTHOR.author_id
         String query = "SELECT BOOK.book_id , BOOK.title , BOOK.pub_year,BOOK.selling_price ,BOOK.category ," +
-                " BOOK.quantity , BOOK.publisher_id , BOOK.threshold ,AUTHOR.author_name , PUBLISHER.publisher_name" +
+                " BOOK.quantity , BOOK.publisher_id , BOOK.threshold ,AUTHOR.name , PUBLISHER.name" +
                 " FROM BOOK,AUTHOR,AUTHORED_BY,PUBLISHER WHERE BOOK.book_id = "
-                + bookId +"AND BOOK.publisher_id = PUBLISHER.publisher_id AND"+
-        "BOOK.book_id = AUTHORED_BY.book_id AND AUTHORED_BY.author_id = AUTHOR.author_id";
+                + bookId +"  AND  BOOK.publisher_id = PUBLISHER.publisher_id  AND  "+
+        "BOOK.book_id = AUTHORED_BY.book_id  AND  AUTHORED_BY.author_id = AUTHOR.author_id";
         return query;
     }
 
     public String getBookByTitle(String title) {
         String query = "SELECT BOOK.book_id , BOOK.title , BOOK.pub_year,BOOK.selling_price ,BOOK.category ," +
-                " BOOK.quantity , BOOK.publisher_id , BOOK.threshold ,AUTHOR.author_name , PUBLISHER.publisher_name\" +\n" +
+                " BOOK.quantity , BOOK.publisher_id , BOOK.threshold ,AUTHOR.name , PUBLISHER.name\" +\n" +
                 "  FROM BOOK,AUTHOR,AUTHORED_BY,PUBLISHER WHERE BOOK.title =  \""
-                + title + "\" AND BOOK.publisher_id = PUBLISHER.publisher_id AND"+
-                "BOOK.book_id = AUTHORED_BY.book_id AND AUTHORED_BY.author_id = AUTHOR.author_id";
+                + title + "\"  AND  BOOK.publisher_id = PUBLISHER.publisher_id  AND  "+
+                "BOOK.book_id = AUTHORED_BY.book_id  AND  AUTHORED_BY.author_id = AUTHOR.author_id";
         return query;
     }
 
