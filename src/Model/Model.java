@@ -1,9 +1,7 @@
 package Model;
 
-import Entites.Book;
-import Entites.CartElement;
-import Entites.Order;
-import Entites.User;
+import Entites.*;
+import sun.net.idn.Punycode;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -73,9 +71,9 @@ public class Model implements IModel {
 
     }
     @Override
-    public int getNumberOfPagesOfBooks(){
+    public int getNumberOfPagesOfBooks(HashMap<String, String> searchMap){
         final String key = "count";
-        String query = sQlCommands.getNumberOfPagesOfBooks(key);
+        String query = sQlCommands.getNumberOfPagesOfBooks(key, searchMap);
         return getNumberOfPages(key, query);
     }
 
@@ -92,8 +90,8 @@ public class Model implements IModel {
         return numberOfPages;
     }
 
-    public ArrayList<Book> getBooksByPage(int pageNumber, int limit){
-        String query = sQlCommands.getBooksByPage(pageNumber , limit);
+    public ArrayList<Book> getBooksByPage(int pageNumber, int limit, HashMap<String, String> searchMap){
+        String query = sQlCommands.getBooksByPage(pageNumber , limit, searchMap);
         return getBooks(query);
     }
 
@@ -108,12 +106,6 @@ public class Model implements IModel {
         return getBooks(query);
     }
 
-
-    @Override
-    public ArrayList<Book> searchForBooks(HashMap<String, String> searchMap) {
-        String query = sQlCommands.searchForBooks(searchMap);
-        return getBooks(query);
-    }
 
     @Override
     public Book getBookById(int bookId){
@@ -177,23 +169,16 @@ public class Model implements IModel {
 
     @Override
     public boolean addToCart(int bookId, int quantity, int userId) {
-        CartElement cartElement = new CartElement();
-        cartElement.setBookId(bookId);
-        cartElement.setQuantity(quantity);
-        cartElement.setUserId(userId);
-        String query = sQlCommands.addToCart(cartElement);
-        int affectedRows = 0 ;
         try {
-            affectedRows = connectionHandler.executeInsert(query);
+            connectionHandler.prepareCallForAddToCart(bookId,userId,quantity);
         } catch (SQLException e) {
             System.out.println("SQLException: " + e.getMessage());
             System.out.println("SQLState: " + e.getSQLState());
             System.out.println("VendorError: " + e.getErrorCode());
             return false;
+
         }
-        if (affectedRows > 0)
-            return true;
-        return false;
+        return true;
     }
 
     @Override
@@ -288,8 +273,21 @@ public class Model implements IModel {
 
     @Override
     public boolean addBook(Book book) {
+        if (book.getAuthorsIds() == null){
+            return false;
+        }
         String query = sQlCommands.insertBook(book);
-        return update(query);
+        boolean insertion = update(query);
+        insertAuthorsFromBook(book);
+        return insertion ;
+    }
+
+    private void insertAuthorsFromBook(Book book) {
+        ArrayList<Integer> authors = book.getAuthorsIds();
+        for (int i = 0; i < authors.size(); i++) {
+            String authoredByQuery = sQlCommands.setAuthoredBy( authors.get(i), book.getBookId());
+            update(authoredByQuery);
+        }
     }
 
     @Override
@@ -335,6 +333,85 @@ public class Model implements IModel {
         String query = sQlCommands.deleteOrder(orderId);
         return update(query);
     }
+
+    @Override
+    public int getNumberOfPagesOfPublisher() {
+        final String key = "count";
+        String query = sQlCommands.getNumberOfPagesOfPublishers(key);
+        return getNumberOfPages(key, query);
+    }
+
+    @Override
+    public ArrayList<Publisher> getPublishersByPage(int pageNumber, int limit) {
+        String query = sQlCommands.getPublishersByPage(pageNumber , limit);
+        return getPublishers(query);
+    }
+
+    private ArrayList<Publisher> getPublishers(String query) {
+        ArrayList<Publisher> publishers = new ArrayList<>();
+        try {
+            ResultSet resultSet = connectionHandler.executeQuery(query);
+            while (resultSet.next()){
+                Publisher publisher = new Publisher();
+                publisher.setPublisherId(resultSet.getInt("publisher_id"));
+                publisher.setName(resultSet.getString("name"));
+                publisher.setPhone(resultSet.getString("phone"));
+                publisher.setAddress(resultSet.getString("address"));
+                publishers.add(publisher);
+            }
+        } catch (SQLException e) {
+            System.out.println("SQLException: " + e.getMessage());
+            System.out.println("SQLState: " + e.getSQLState());
+            System.out.println("VendorError: " + e.getErrorCode());
+            return null;
+        }
+        return publishers;
+    }
+
+    @Override
+    public boolean addPublisher(Publisher publisher) {
+        String query = sQlCommands.insertPublisher(publisher);
+        return update(query);
+    }
+
+    @Override
+    public int getNumberOfPagesOfAuthors() {
+        final String key = "count";
+        String query = sQlCommands.getNumberOfPagesOfAuthors(key);
+        return getNumberOfPages(key, query);
+    }
+
+    @Override
+    public ArrayList<Author> getAuthorsByPage(int pageNumber, int limit) {
+        String query = sQlCommands.getAuthorsByPage(pageNumber , limit);
+        return getAuthors(query);
+    }
+
+    @Override
+    public boolean addAuthor(Author author) {
+        String query = sQlCommands.insertAuthor(author);
+        return update(query);
+    }
+
+    private ArrayList<Author> getAuthors(String query) {
+        ArrayList<Author> authors = new ArrayList<>();
+        try {
+            ResultSet resultSet = connectionHandler.executeQuery(query);
+            while (resultSet.next()){
+                Author author = new Author();
+                author.setAuthorId(resultSet.getInt("author_id"));
+                author.setName(resultSet.getString("name"));
+                authors.add(author);
+            }
+        } catch (SQLException e) {
+            System.out.println("SQLException: " + e.getMessage());
+            System.out.println("SQLState: " + e.getSQLState());
+            System.out.println("VendorError: " + e.getErrorCode());
+            return null;
+        }
+        return authors;
+    }
+
 
     public boolean emptyCart(int userId){
         String query = sQlCommands.emptyCart(userId);

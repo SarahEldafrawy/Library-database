@@ -65,4 +65,16 @@ public class ConnectionHandler {
         statement.execute();
         return true;
     }
+
+    public boolean prepareCallForAddToCart(int bookId, int userId, int quantity) throws SQLException{
+        CallableStatement statement;
+        String query ="{call add_to_cart(?,?,?)}";
+        statement = con.prepareCall(query);
+        statement.setInt(1,bookId);
+        statement.setInt(2,userId);
+        statement.setInt(3,quantity);
+        statement.execute();
+        return true;
+
+    }
 }

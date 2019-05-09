@@ -1,4 +1,7 @@
 package Entites;
+
+import java.util.ArrayList;
+
 public class Book {
     public final String BOOKID = "book_id";
     public final String TITLE = "title";
@@ -20,6 +23,17 @@ public class Book {
     int quantity;
     int publisherId;
     int threshold;
+    String PublisherName;
+    ArrayList<Integer> authorsIds = null;
+    ArrayList<String> authorsNames = null;
+
+    public ArrayList<Integer> getAuthorsIds() {
+        return authorsIds;
+    }
+
+    public void setAuthorsIds(ArrayList<Integer> authorsIds) {
+        this.authorsIds = authorsIds;
+    }
 
     public int getThreshold() {
         return threshold;

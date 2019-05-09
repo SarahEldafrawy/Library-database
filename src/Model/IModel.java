@@ -1,22 +1,17 @@
 package Model;
 
-import Entites.Book;
-import Entites.CartElement;
-import Entites.Order;
-import Entites.User;
+import Entites.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 
 public interface IModel {
-    //todo file constants
     boolean register(User user);
     User logIn(String name, String password);
     boolean updateUser(User user);
     ArrayList<Book> getStartBooks();
-    int getNumberOfPagesOfBooks();
-    ArrayList<Book> getBooksByPage(int pageNumber, int limit);
-    ArrayList<Book> searchForBooks(HashMap<String,String> searchMap);
+    int getNumberOfPagesOfBooks(HashMap<String, String> searchMap);
+    ArrayList<Book> getBooksByPage(int pageNumber, int limit,HashMap<String, String> searchMap);
     boolean addToCart(int bookId, int quantity, int userId);
     boolean removeFromCart(int bookId, int userId);
     boolean emptyCart(int userId);
@@ -35,6 +30,13 @@ public interface IModel {
     ArrayList<Order> getAllOrders();
     boolean placeOrder(int bookId , int quantity);
     boolean confirmOrder(int OrderId);
+    int getNumberOfPagesOfPublisher();
+    ArrayList<Publisher> getPublishersByPage(int pageNumber, int limit);
+    boolean addPublisher(Publisher publisher);
+    int getNumberOfPagesOfAuthors();
+    ArrayList<Author> getAuthorsByPage(int pageNumber, int limit);
+    boolean addAuthor(Author author);
+
     // functions that return reports
 
 
