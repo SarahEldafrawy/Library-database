@@ -109,7 +109,6 @@ public class Model implements IModel {
 
     @Override
     public Book getBookById(int bookId){
-        //TODO join with publisher and authors and add them in object book
         String query = sQlCommands.getBookById(bookId);
         return getBook(query);
 
@@ -128,14 +127,12 @@ public class Model implements IModel {
 
     @Override
     public Book getBookByTitle(String title){
-        //TODO join with publisher and authors and add them in object book
         String query = sQlCommands.getBookByTitle(title);
         return getBook(query);
 
     }
 
     private Book getBook(String query) {
-        //TODO join with publisher and authors and add them in object book
         Book book = null;
         try {
             ResultSet resultSet = connectionHandler.executeQuery(query);
@@ -172,23 +169,16 @@ public class Model implements IModel {
 
     @Override
     public boolean addToCart(int bookId, int quantity, int userId) {
-        CartElement cartElement = new CartElement();
-        cartElement.setBookId(bookId);
-        cartElement.setQuantity(quantity);
-        cartElement.setUserId(userId);
-        String query = sQlCommands.addToCart(cartElement);
-        int affectedRows = 0 ;
         try {
-            affectedRows = connectionHandler.executeInsert(query);
+            connectionHandler.prepareCallForAddToCart(bookId,userId,quantity);
         } catch (SQLException e) {
             System.out.println("SQLException: " + e.getMessage());
             System.out.println("SQLState: " + e.getSQLState());
             System.out.println("VendorError: " + e.getErrorCode());
             return false;
+
         }
-        if (affectedRows > 0)
-            return true;
-        return false;
+        return true;
     }
 
     @Override

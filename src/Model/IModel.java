@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public interface IModel {
-    //todo file constants
     boolean register(User user);
     User logIn(String name, String password);
     boolean updateUser(User user);
