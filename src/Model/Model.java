@@ -16,7 +16,7 @@ public class Model implements IModel {
     private SQLCommands sQlCommands;
 
     public Model() throws SQLException, ClassNotFoundException {
-        connectionHandler = new ConnectionHandler();
+        connectionHandler = ConnectionHandler.getInstance();
         connectionHandler.startConnection();
         pagination = new Paginator();
         sQlCommands = new SQLCommands();
