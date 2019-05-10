@@ -46,7 +46,7 @@ where BOOK.book_id = SALES.book_id;]]>
                <font size = "22"/>
             </textElement>
             
-            <text><![CDATA[Top 10 Books]]></text>
+            <text><![CDATA[Top Sales]]></text>
          </staticText>
       </band>
    </title>

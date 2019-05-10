@@ -191,6 +191,7 @@ create table if not exists SALES
 	user_id int not null,
 	date_of_sale date not null,
 	quantity int not null,
+	total_price float not null,
 	constraint SALES_BOOK_Book_id_fk
 		foreign key (book_id) references BOOK (book_id)
 			on update cascade on delete cascade,
@@ -204,7 +205,8 @@ BEGIN
     IF (EXISTS(SELECT *
                FROM CART
                WHERE CART.book_id = book_id
-                 AND CART.user_id = user_id))
+                 AND CART.user_id = user_id
+                 AND CART.in_cart = true))
     then
       UPDATE CART
       set CART.quantity = CART.quantity + quantity
