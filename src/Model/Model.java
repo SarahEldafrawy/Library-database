@@ -37,9 +37,7 @@ public class Model implements IModel {
             }
 
         } catch (SQLException e) {
-            System.out.println("SQLException: " + e.getMessage());
-            System.out.println("SQLState: " + e.getSQLState());
-            System.out.println("VendorError: " + e.getErrorCode());
+            printingSQLException(e);
             return null;
         }
         return null;
@@ -82,11 +80,15 @@ public class Model implements IModel {
             ResultSet resultSet = connectionHandler.executeQuery(query);
             numberOfPages = resultSet.getInt(key);
         } catch (SQLException e) {
-            System.out.println("SQLException: " + e.getMessage());
-            System.out.println("SQLState: " + e.getSQLState());
-            System.out.println("VendorError: " + e.getErrorCode());
+            printingSQLException(e);
         }
         return numberOfPages;
+    }
+
+    private void printingSQLException(SQLException e) {
+        System.out.println("SQLException: " + e.getMessage());
+        System.out.println("SQLState: " + e.getSQLState());
+        System.out.println("VendorError: " + e.getErrorCode());
     }
 
     public ArrayList<Book> getBooksByPage(int pageNumber, int limit, HashMap<String, String> searchMap){
@@ -107,6 +109,10 @@ public class Model implements IModel {
 
     private ArrayList<User> getUsers(String query) {
         ArrayList<User> users = new ArrayList<>();
+        return getUsers(query, users);
+    }
+
+    private ArrayList<User> getUsers(String query, ArrayList<User> users) {
         try {
             ResultSet resultSet = connectionHandler.executeQuery(query);
             while (resultSet.next()){
@@ -115,9 +121,7 @@ public class Model implements IModel {
                 users.add(user);
             }
         } catch (SQLException e) {
-            System.out.println("SQLException: " + e.getMessage());
-            System.out.println("SQLState: " + e.getSQLState());
-            System.out.println("VendorError: " + e.getErrorCode());
+            printingSQLException(e);
             return null;
         }
         return users;
@@ -149,7 +153,7 @@ public class Model implements IModel {
         return getBook(query);
 
     }
-
+    //todo resultSet.next() fei wa7d ma3mello shift mesh beyrou7 ll gui
     private Book getBook(String query) {
         Book book = null;
         try {
@@ -157,16 +161,14 @@ public class Model implements IModel {
             while (resultSet.next()){
                 book = new Book();
                 setBook(book, resultSet);
-                System.out.println(resultSet);
                 book.setPublisherName(resultSet.getString("publisher_name"));
+                book.addAuthor(resultSet.getString("author_name"));
                 while(resultSet.next()) {
                     book.addAuthor(resultSet.getString("author_name"));
                 }
             }
         } catch (SQLException e) {
-            System.out.println("SQLException: " + e.getMessage());
-            System.out.println("SQLState: " + e.getSQLState());
-            System.out.println("VendorError: " + e.getErrorCode());
+            printingSQLException(e);
             return null;
         }
         return book;
@@ -182,9 +184,7 @@ public class Model implements IModel {
                 books.add(book);
             }
         } catch (SQLException e) {
-            System.out.println("SQLException: " + e.getMessage());
-            System.out.println("SQLState: " + e.getSQLState());
-            System.out.println("VendorError: " + e.getErrorCode());
+            printingSQLException(e);
             return null;
         }
         return books;
@@ -195,9 +195,7 @@ public class Model implements IModel {
         try {
             connectionHandler.prepareCallForAddToCart(bookId,userId,quantity);
         } catch (SQLException e) {
-            System.out.println("SQLException: " + e.getMessage());
-            System.out.println("SQLState: " + e.getSQLState());
-            System.out.println("VendorError: " + e.getErrorCode());
+            printingSQLException(e);
             return false;
 
         }
@@ -209,9 +207,7 @@ public class Model implements IModel {
         try {
             connectionHandler.prepareCall(userId , bookId);
         } catch (SQLException e) {
-            System.out.println("SQLException: " + e.getMessage());
-            System.out.println("SQLState: " + e.getSQLState());
-            System.out.println("VendorError: " + e.getErrorCode());
+            printingSQLException(e);
             return false;
         }
         return true;
@@ -231,9 +227,7 @@ public class Model implements IModel {
                 cart.add(cartElement);
             }
         } catch (SQLException e) {
-            System.out.println("SQLException: " + e.getMessage());
-            System.out.println("SQLState: " + e.getSQLState());
-            System.out.println("VendorError: " + e.getErrorCode());
+            printingSQLException(e);
             return null;
         }
         return cart;
@@ -244,9 +238,7 @@ public class Model implements IModel {
         try {
             connectionHandler.prepareCall(userId , -1);
         } catch (SQLException e) {
-            System.out.println("SQLException: " + e.getMessage());
-            System.out.println("SQLState: " + e.getSQLState());
-            System.out.println("VendorError: " + e.getErrorCode());
+            printingSQLException(e);
             return false;
         }
         return true;
@@ -256,20 +248,7 @@ public class Model implements IModel {
     public ArrayList<User> getAllUsers() {
         String query =sQlCommands.getAllUsers();
         ArrayList<User> users = new ArrayList<User>();
-        try {
-            ResultSet resultSet = connectionHandler.executeQuery(query);
-            while (resultSet.next()){
-                User user = new User();
-                setUser(resultSet, user);
-                users.add(user);
-            }
-        } catch (SQLException e) {
-            System.out.println("SQLException: " + e.getMessage());
-            System.out.println("SQLState: " + e.getSQLState());
-            System.out.println("VendorError: " + e.getErrorCode());
-            return null;
-        }
-        return users;
+        return getUsers(query, users);
     }
 
     @Override
@@ -283,9 +262,7 @@ public class Model implements IModel {
         try {
             affectedRows = connectionHandler.executeUpdate(query);
         } catch (SQLException e) {
-            System.out.println("SQLException: " + e.getMessage());
-            System.out.println("SQLState: " + e.getSQLState());
-            System.out.println("VendorError: " + e.getErrorCode());
+            printingSQLException(e);
             return false;
         }
         if (affectedRows > 0){
@@ -334,9 +311,7 @@ public class Model implements IModel {
                 orders.add(order);
             }
         } catch (SQLException e) {
-            System.out.println("SQLException: " + e.getMessage());
-            System.out.println("SQLState: " + e.getSQLState());
-            System.out.println("VendorError: " + e.getErrorCode());
+            printingSQLException(e);
             return null;
         }
         return orders;
@@ -383,9 +358,7 @@ public class Model implements IModel {
                 publishers.add(publisher);
             }
         } catch (SQLException e) {
-            System.out.println("SQLException: " + e.getMessage());
-            System.out.println("SQLState: " + e.getSQLState());
-            System.out.println("VendorError: " + e.getErrorCode());
+            printingSQLException(e);
             return null;
         }
         return publishers;
@@ -394,6 +367,7 @@ public class Model implements IModel {
     @Override
     public boolean addPublisher(Publisher publisher) {
         String query = sQlCommands.insertPublisher(publisher);
+        System.out.println(query);
         return update(query);
     }
 
@@ -427,9 +401,7 @@ public class Model implements IModel {
                 authors.add(author);
             }
         } catch (SQLException e) {
-            System.out.println("SQLException: " + e.getMessage());
-            System.out.println("SQLState: " + e.getSQLState());
-            System.out.println("VendorError: " + e.getErrorCode());
+            printingSQLException(e);
             return null;
         }
         return authors;

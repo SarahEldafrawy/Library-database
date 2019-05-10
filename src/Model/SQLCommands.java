@@ -146,25 +146,33 @@ public class SQLCommands {
     }
 
     public String getBookById(int bookId) {
-        String query = "SELECT BOOK.book_id , BOOK.title , BOOK.pub_year,BOOK.selling_price ,BOOK.category ," +
-                " BOOK.quantity , BOOK.publisher_id , BOOK.threshold ,AUTHOR.name As author_name , PUBLISHER.name AS publisher_name " +
-                " FROM BOOK,AUTHOR,AUTHORED_BY,PUBLISHER WHERE BOOK.book_id = "
-                + bookId +" AND  BOOK.publisher_id = PUBLISHER.publisher_id"  /*AND "+
-        "BOOK.book_id = AUTHORED_BY.book_id  AND  AUTHORED_BY.author_id = AUTHOR.author_id"*/;
+     String query = "SELECT BOOK.book_id , BOOK.title , BOOK.pub_year,BOOK.selling_price ,BOOK.category , BOOK.quantity , BOOK.publisher_id , BOOK.threshold ,\n" +
+                " \"\" As author_name , PUBLISHER.name AS publisher_name\n" +
+                " FROM BOOK, PUBLISHER\n" +
+                " WHERE BOOK.book_id = " + bookId + " AND  BOOK.publisher_id = PUBLISHER.publisher_id AND Not exists (select * From AUTHORED_BY where AUTHORED_BY.book_id = " + bookId + " )\n" +
+                " Union\n" +
+                " SELECT BOOK.book_id , BOOK.title , BOOK.pub_year,BOOK.selling_price ,BOOK.category , BOOK.quantity , BOOK.publisher_id , BOOK.threshold ,\n" +
+                "       AUTHOR.name As author_name , PUBLISHER.name AS publisher_name\n" +
+                "    FROM BOOK,AUTHOR,AUTHORED_BY,PUBLISHER\n" +
+                " WHERE BOOK.book_id = "+ bookId +" AND  BOOK.publisher_id = PUBLISHER.publisher_id AND BOOK.book_id = AUTHORED_BY.book_id  AND  AUTHORED_BY.author_id = AUTHOR.author_id";
         return query;
     }
 
     public String getBookByTitle(String title) {
-        String query = "SELECT BOOK.book_id , BOOK.title , BOOK.pub_year,BOOK.selling_price ,BOOK.category ," +
-                " BOOK.quantity , BOOK.publisher_id , BOOK.threshold ,AUTHOR.name As author_name , PUBLISHER.name AS publisher_name " +
-                "  FROM BOOK,AUTHOR,AUTHORED_BY,PUBLISHER WHERE BOOK.title =  \""
-                + title + "\"  AND  BOOK.publisher_id = PUBLISHER.publisher_id " /*AND "+
-                "BOOK.book_id = AUTHORED_BY.book_id  AND  AUTHORED_BY.author_id = AUTHOR.author_id"*/;
+        String query = "SELECT BOOK.book_id , BOOK.title , BOOK.pub_year,BOOK.selling_price ,BOOK.category , BOOK.quantity , BOOK.publisher_id , BOOK.threshold ,\n" +
+                " \"\" As author_name , PUBLISHER.name AS publisher_name\n" +
+                " FROM BOOK, PUBLISHER\n" +
+                " WHERE BOOK.title = \'" + title + "\' AND  BOOK.publisher_id = PUBLISHER.publisher_id\n" +
+                " AND \'" + title + "\' Not in (select BOOK.title From BOOK, AUTHORED_BY where AUTHORED_BY.book_id = BOOK.book_id)\n" +
+                " Union\n" +
+                " SELECT BOOK.book_id , BOOK.title , BOOK.pub_year,BOOK.selling_price ,BOOK.category , BOOK.quantity , BOOK.publisher_id , BOOK.threshold ,\n" +
+                " AUTHOR.name As author_name , PUBLISHER.name AS publisher_name\n" +
+                " FROM BOOK,AUTHOR,AUTHORED_BY,PUBLISHER\n" +
+                " WHERE BOOK.title = \'" + title + "\' AND  BOOK.publisher_id = PUBLISHER.publisher_id AND BOOK.book_id = AUTHORED_BY.book_id  AND  AUTHORED_BY.author_id = AUTHOR.author_id\n";
         return query;
     }
 
     public String getBooksByPage(int pageNumber, int limit, HashMap<String , String> searchMap) {
-//        String query = "SELECT * FROM BOOK LIMIT " + pageNumber*limit+ " , " +limit+"";
         String whereClause = getWhereClauseBooks(searchMap);
         String query = "SELECT BOOK.book_id , BOOK.title , BOOK.pub_year," +
                 " BOOK.selling_price ,BOOK.category , BOOK.quantity , BOOK.publisher_id , BOOK.threshold "
