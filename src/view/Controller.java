@@ -172,7 +172,7 @@ public class Controller {
     private Button searchButton;
 
     @FXML
-    private TextField searchCategoryTextbox;
+    private ComboBox searchCategoryTextbox;
 
     @FXML
     private TextField searchTitleTextbox;
@@ -467,8 +467,79 @@ public class Controller {
     }
     @FXML
     void proceedToCheckout(ActionEvent event) {
-        //todo checkout is not working and cart is not empty after it
-        //todo must clear cart on start of new connection
+        Pane container = new Pane();
+        Scene secondScene = new Scene(container, 442.0, 296);
+        secondScene.getStylesheets().add("style.css");
+        Stage newWindow = new Stage();
+        newWindow.setTitle("Master Card");
+        newWindow.setScene(secondScene);
+
+        Image image = null;
+        try {
+            image = new Image(new FileInputStream(
+                    this.getClass().getProtectionDomain().getCodeSource().getLocation().getPath()
+                            + "../../../src/view/Resources/images/libraryy.jpg"));
+        } catch (FileNotFoundException e1) {
+            e1.printStackTrace();
+        }
+        ImageView wallpaper = new ImageView(image);
+        wallpaper.setFitHeight(297.5);
+        wallpaper.setFitWidth(442.0);
+        wallpaper.setX(0);
+        wallpaper.setY(0);
+        container.getChildren().add(wallpaper);
+        VBox vbx = new VBox();
+        vbx.setMinWidth(442);
+        vbx.setMinHeight(297.5);
+        vbx.setAlignment(Pos.CENTER);
+
+        HBox mcard = new HBox();
+        TextField prt1 = new TextField();
+        prt1.setPromptText("XXXX");
+        prt1.setFocusTraversable(false);
+        Label sep1 = new Label("-");
+        Label sep2 = new Label("-");
+        Label sep3 = new Label("-");
+        sep1.setFont(Font.font("Cambria", 30));
+        sep1.setTextFill(Color.WHITE);
+        sep2.setFont(Font.font("Cambria", 30));
+        sep3.setFont(Font.font("Cambria", 30));
+        sep2.setTextFill(Color.WHITE);
+        sep3.setTextFill(Color.WHITE);
+        TextField prt2 = new TextField();
+        prt2.setPromptText("XXXX");
+        prt2.setFocusTraversable(false);
+        TextField prt3 = new TextField();
+        prt3.setPromptText("XXXX");
+        prt3.setFocusTraversable(false);
+        TextField prt4 = new TextField();
+        prt4.setPromptText("XXXX");
+        prt4.setFocusTraversable(false);
+        prt1.setMaxWidth(70);
+        prt2.setMaxWidth(70);
+        prt3.setMaxWidth(70);
+        prt4.setMaxWidth(70);
+        mcard.setAlignment(Pos.CENTER);
+        mcard.setMinWidth(442);
+        vbx.setSpacing(1);
+
+        mcard.getChildren().addAll(prt1,sep1,prt2,sep2, prt3,sep3,prt4);
+        Button done = new Button("Purchase");
+        done.setFocusTraversable(true);
+        done.getStyleClass().add("mybutton");
+        done.setTextFill(Color.WHITE);
+        done.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                //todo create new author and add it to database, done
+                ((Node)event.getSource()).getScene().getWindow().hide();
+            }
+        });
+        vbx.getChildren().addAll(mcard, done);
+        container.getChildren().add(vbx);
+        newWindow.setX(582);
+        newWindow.setY(259);
+        newWindow.show();
         database.checkout(currentUser.getUserId());
         cartBooks = new ArrayList<>();
         prepareBooks(cartBooks);
@@ -891,6 +962,7 @@ public class Controller {
                 TextField address = new TextField(currentUser.getEmailAddress());
                 TextField phone = new TextField(currentUser.getPhoneNumber());
                 TextField name = new TextField(currentUser.getFirstName()+ " " + currentUser.getLastName());
+                //TextField mastercard = new TextField(currentUser.);
                 Button chngpwd = new Button("Change Password");
                 chngpwd.setFocusTraversable(true);
                 chngpwd.getStyleClass().add("mybutton");
@@ -1458,8 +1530,8 @@ public class Controller {
         if(!searchAuthorTextbox.getText().equals("")) {
             searchElements.put(book.AUTHOR_NAME, searchAuthorTextbox.getText());
         }
-        if(!searchCategoryTextbox.getText().equals("")) {
-            searchElements.put(book.CATEGORY, searchCategoryTextbox.getText());
+        if(!searchCategoryTextbox.getValue().equals("")) {
+            searchElements.put(book.CATEGORY, (String)searchCategoryTextbox.getValue());
         }
         if(!searchTitleTextbox.getText().equals("")) {
             searchElements.put(book.PUBLISHER_NAME, searchTitleTextbox.getText());
@@ -1739,13 +1811,13 @@ public class Controller {
             publishersButtonToolbar.setVisible(true);
         } else {
             addPublisherButtonToolbar.setVisible(false);
-            publishersButtonToolbar.setVisible(false);
+            publishersButtonToolbar.setVisible(true);
             addBookButtonToolbar.setVisible(false);
             viewOrdersButtonToolbar.setVisible(false);
             viewReportButtonToolbar.setVisible(false);
-            getAuthorsButtonToolbar.setVisible(false);
-            getAuthorsButtonToolbar.setVisible(false);
+            getAuthorsButtonToolbar.setVisible(true);
             addAuthorButtonToolbar.setVisible(false);
+            viewUsersButtonToolbar.setVisible(false);
         }
         booksPane.setVisible(true);
         searchAuthorTextbox.setVisible(true);
@@ -1925,8 +1997,8 @@ public class Controller {
         currentUser = new User();
         allBooks = database.getBooksByPage(pageNum, LIMIT, new HashMap<>());
         cartBooks = new ArrayList<Book>();
-        /*
-        currentUser.setFirstName("Islam");
+
+        /*currentUser.setFirstName("Islam");
         currentUser.setLastName("Gamal");
         currentUser.setEmailAddress("islamgamal77@gmail.com");
         currentUser.setPromoted(true);
@@ -1945,6 +2017,6 @@ public class Controller {
             book.setQuantity((int)(Math. random() * 50 + 1));
             allBooks.add(book);
         }
-        */
+*/
     }
 }

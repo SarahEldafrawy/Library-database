@@ -2,6 +2,7 @@
 
 <?import java.lang.*?>
 <?import java.net.*?>
+<?import javafx.collections.*?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.control.Button?>
@@ -57,7 +58,6 @@
     </ScrollPane>
     <TextField fx:id="searchAuthorTextbox" layoutX="314.0" layoutY="677.0" prefHeight="35.1328125" prefWidth="204.99997792968497" promptText="Search by Author" visible="false" />
     <TextField fx:id="searchTitleTextbox" layoutX="536.0" layoutY="677.0" prefHeight="35.1328125" prefWidth="204.99997792968497" promptText="Search by Publisher" visible="false" />
-    <TextField fx:id="searchCategoryTextbox" layoutX="759.0" layoutY="677.0" prefHeight="35.1328125" prefWidth="194.99997792968497" promptText="Search by Categories" visible="false" />
     <Button fx:id="searchButton" layoutX="355.0" layoutY="724.0" minHeight="26.1328125" mnemonicParsing="false" onAction="#clickSearch" prefHeight="42.1328125" prefWidth="569.00022207031" style="-fx-background-color : #613826;" text="search library" textFill="WHITE" visible="false">
       <font>
         <Font size="15.0" />
@@ -93,7 +93,7 @@
             <URL value="@Resources/styles/style.css" />
           </stylesheets>
         </Button>
-        <Button id="" fx:id="viewReportButtonToolbar" onAction="#viewReport" font="$x2" mnemonicParsing="false" prefHeight="39.0" prefWidth="91.0" style="&#10;" styleClass="mybutton" text="Reports" textFill="WHITE" visible="true">
+        <Button id="" fx:id="viewReportButtonToolbar" font="$x2" mnemonicParsing="false" onAction="#viewReport" prefHeight="39.0" prefWidth="91.0" style="&#10;" styleClass="mybutton" text="Reports" textFill="WHITE" visible="true">
           <stylesheets>
             <URL value="@Resources/styles/style.css" />
           </stylesheets>
@@ -161,7 +161,7 @@
         <Image url="@Resources/images/valid.png" />
       </image>
     </ImageView>
-    <Button id="loginButton" fx:id="checkoutButton" font="$x1" layoutX="409.0" layoutY="700" minHeight="28.1328125" mnemonicParsing="false" onAction="#proceedToCheckout" prefHeight="42.1328125" prefWidth="436.0" style="" styleClass="mybutton, " text="Proceed To Checkout" textFill="WHITE" visible="false">
+    <Button id="loginButton" fx:id="checkoutButton" font="$x1" layoutX="409.0" layoutY="700.0" minHeight="28.1328125" mnemonicParsing="false" onAction="#proceedToCheckout" prefHeight="42.1328125" prefWidth="436.0" style="" styleClass="mybutton, " text="Proceed To Checkout" textFill="WHITE" visible="false">
       <stylesheets>
         <URL value="@Resources/styles/style.css" />
       </stylesheets>
@@ -189,5 +189,16 @@
         <Font size="25.0" />
       </font>
     </Label>
+    <ComboBox fx:id="searchCategoryTextbox" layoutX="759.0" layoutY="676.0" prefHeight="35.13280029296875" prefWidth="195.0" promptText="Search by Categories" visible="false">
+      <items>
+        <FXCollections fx:factory="observableArrayList">
+          <String fx:value="Art" />
+          <String fx:value="Science" />
+          <String fx:value="Geography" />
+          <String fx:value="Religion" />
+          <String fx:value="History" />
+        </FXCollections>
+      </items>
+    </ComboBox>
   </children>
 </Pane>
