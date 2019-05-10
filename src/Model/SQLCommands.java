@@ -55,14 +55,14 @@ public class SQLCommands {
         return query;
     }
 
-    public String addToCart(CartElement cartElement) {
-        String query = "INSERT INTO CART VALUES ("
-                +cartElement.getBookId() + ","
-                +cartElement.getUserId() + ","
-                +cartElement.getQuantity() + ","
-                +cartElement.isInCart() + ")";
-        return query;
-    }
+//    public String addToCart(CartElement cartElement) {
+//        String query = "INSERT INTO CART VALUES ("
+//                +cartElement.getBookId() + ","
+//                +cartElement.getUserId() + ","
+//                +cartElement.getQuantity() + ","
+//                +cartElement.isInCart() + ")";
+//        return query;
+//    }
 
     public String getCart(int userId) {
         String query = "SELECT * FROM CART WHERE CART.user_id = " + userId;
