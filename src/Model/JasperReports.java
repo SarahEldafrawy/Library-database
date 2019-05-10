@@ -14,9 +14,9 @@ public class JasperReports implements IReports{
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
-        JasperReportBuilder
-        JasperReportBuilder report = DynamicReports.report();
-        Columns.column("Customer Id", "id", DataTypes.integerType());
+//        JasperReportBuilder G;
+//        JasperReportBuilder report = DynamicReports.report();
+//        Columns.column("Customer Id", "id", DataTypes.integerType());
 
 
     }

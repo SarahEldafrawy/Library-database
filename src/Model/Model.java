@@ -100,9 +100,27 @@ public class Model implements IModel {
         return getNumberOfPages(key, query);
     }
 
-    public ArrayList<Book> getUsersByPage(int pageNumber, int limit){
+    public ArrayList<User> getUsersByPage(int pageNumber, int limit){
         String query = sQlCommands.getUsersByPage(pageNumber , limit);
-        return getBooks(query);
+        return getUsers(query);
+    }
+
+    private ArrayList<User> getUsers(String query) {
+        ArrayList<User> users = new ArrayList<>();
+        try {
+            ResultSet resultSet = connectionHandler.executeQuery(query);
+            while (resultSet.next()){
+                User user = new User();
+                setUser(resultSet , user);
+                users.add(user);
+            }
+        } catch (SQLException e) {
+            System.out.println("SQLException: " + e.getMessage());
+            System.out.println("SQLState: " + e.getSQLState());
+            System.out.println("VendorError: " + e.getErrorCode());
+            return null;
+        }
+        return users;
     }
 
 

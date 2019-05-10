@@ -55,9 +55,9 @@
         <AnchorPane id="Content" minHeight="0.0" minWidth="0.0" prefHeight="438.0" prefWidth="872.0" visible="true" />
       </content>
     </ScrollPane>
-    <TextField fx:id="searchAuthorTextbox" layoutX="314.0" layoutY="677.0" prefHeight="35.1328125" prefWidth="204.99997792968497" promptText="Search Authors" visible="false" />
-    <TextField fx:id="searchTitleTextbox" layoutX="536.0" layoutY="677.0" prefHeight="35.1328125" prefWidth="204.99997792968497" promptText="Search Titles" visible="false" />
-    <TextField fx:id="searchCategoryTextbox" layoutX="759.0" layoutY="677.0" prefHeight="35.1328125" prefWidth="194.99997792968497" promptText="Search Categories" visible="false" />
+    <TextField fx:id="searchAuthorTextbox" layoutX="314.0" layoutY="677.0" prefHeight="35.1328125" prefWidth="204.99997792968497" promptText="Search by Author" visible="false" />
+    <TextField fx:id="searchTitleTextbox" layoutX="536.0" layoutY="677.0" prefHeight="35.1328125" prefWidth="204.99997792968497" promptText="Search by Publisher" visible="false" />
+    <TextField fx:id="searchCategoryTextbox" layoutX="759.0" layoutY="677.0" prefHeight="35.1328125" prefWidth="194.99997792968497" promptText="Search by Categories" visible="false" />
     <Button fx:id="searchButton" layoutX="355.0" layoutY="724.0" minHeight="26.1328125" mnemonicParsing="false" onAction="#clickSearch" prefHeight="42.1328125" prefWidth="569.00022207031" style="-fx-background-color : #613826;" text="search library" textFill="WHITE" visible="false">
       <font>
         <Font size="15.0" />
@@ -83,7 +83,7 @@
             <URL value="@Resources/styles/style.css" />
           </stylesheets>
         </Button>
-        <Button id="clickViewUsers" fx:id="viewUsersButtonToolbar" font="$x2" mnemonicParsing="false" onAction="#clickViewUsers" prefHeight="39.0" prefWidth="91.0" style="&#10;" styleClass="mybutton" text="Users" textFill="WHITE" visible="true">
+        <Button id="clickViewUsers" fx:id="viewUsersButtonToolbar" font="$x2" mnemonicParsing="false" onAction="#clickViewUsers" prefHeight="39.0" prefWidth="91.0" style="&#10;" styleClass="mybutton" text="Users" textFill="WHITE" visible="false">
           <stylesheets>
             <URL value="@Resources/styles/style.css" />
           </stylesheets>
@@ -161,7 +161,7 @@
         <Image url="@Resources/images/valid.png" />
       </image>
     </ImageView>
-    <Button id="loginButton" fx:id="checkoutButton" font="$x1" layoutX="409.0" layoutY="645.0" minHeight="28.1328125" mnemonicParsing="false" onAction="#proceedToCheckout" prefHeight="42.1328125" prefWidth="436.0" style="" styleClass="mybutton, " text="Proceed To Checkout" textFill="WHITE" visible="false">
+    <Button id="loginButton" fx:id="checkoutButton" font="$x1" layoutX="409.0" layoutY="700" minHeight="28.1328125" mnemonicParsing="false" onAction="#proceedToCheckout" prefHeight="42.1328125" prefWidth="436.0" style="" styleClass="mybutton, " text="Proceed To Checkout" textFill="WHITE" visible="false">
       <stylesheets>
         <URL value="@Resources/styles/style.css" />
       </stylesheets>

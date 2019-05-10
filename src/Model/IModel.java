@@ -20,7 +20,7 @@ public interface IModel {
     Book getBookById(int bookId);
     Book getBookByTitle(String title);
     int getNumberOfPagesOfUsers();
-    ArrayList<Book> getUsersByPage(int pageNumber, int limit);
+    ArrayList<User> getUsersByPage(int pageNumber, int limit);
 
     //manager functions
     ArrayList<User> getAllUsers();
