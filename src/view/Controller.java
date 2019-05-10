@@ -124,6 +124,9 @@ public class Controller {
     private Button viewReportButtonToolbar;
 
     @FXML
+    private Button clickProfileButtonToolbar;
+
+    @FXML
     private Button viewUsersButtonToolbar;
 
     @FXML
@@ -194,6 +197,7 @@ public class Controller {
             String password = passwordTextbox.getText();
             if(!email.equals("admin") & !email.equals("")) {
                 currentUser = database.logIn(email, password);
+                database.emptyCart(currentUser.getUserId());
             }
             if(currentUser == null && !(email.equals("admin") && password.equals("admin")) &&
                     !(email.equals("") && password.equals(""))) {
@@ -385,8 +389,10 @@ public class Controller {
     @FXML
     void proceedToCheckout(ActionEvent event) {
         //todo checkout is not working and cart is not empty after it
+        //todo must clear cart on start of new connection
         database.checkout(currentUser.getUserId());
         cartBooks = new ArrayList<>();
+        prepareBooks(cartBooks);
     }
     @FXML
     void clickHome(ActionEvent event) throws InterruptedException {
@@ -662,6 +668,7 @@ public class Controller {
         TextField authors = new TextField();
         TextField publisherid = new TextField();
         TextField price = new TextField();
+        TextField threshold = new TextField();
         TextField count = new TextField();
         TextField dateOfPublishing = new TextField();
         TextField category = new TextField();
@@ -673,6 +680,8 @@ public class Controller {
         bookid.setFocusTraversable(false);
         authors.setPromptText("Enter author(s) of the book");
         authors.setFocusTraversable(false);
+        threshold.setPromptText("Enter Threshold of the book");
+        threshold.setFocusTraversable(false);
         price.setPromptText("How much is that book?");
         price.setFocusTraversable(false);
         count.setPromptText("How many books do we have?");
@@ -696,6 +705,7 @@ public class Controller {
                 book.setCategory(category.getText());
                 book.setSellingPrice(Float.valueOf(price.getText()));
                 book.setPubYear(dateOfPublishing.getText());
+                book.setThreshold(Integer.valueOf(threshold.getText()));
                 String[] authorsIdsArr = new String[50];
                 ArrayList<Integer> authorsIds = new ArrayList<>();
                 if(!authors.getText().equals("")) {
@@ -763,7 +773,7 @@ public class Controller {
         Button buttonBack = new Button("Back");
         buttonBack.setFocusTraversable(true);
         button.setOnAction(new EventHandler<ActionEvent>() {
-            @Override public void handle(ActionEvent e) {
+            @Override public void handle(ActionEvent eee) {
                 Pane container = new Pane();
                 Scene secondScene = new Scene(container, 442.0, 296);
                 secondScene.getStylesheets().add("style.css");
@@ -876,6 +886,7 @@ public class Controller {
                 done.setOnAction(new EventHandler<ActionEvent>() {
                     @Override
                     public void handle(ActionEvent event) {
+                        ((Node) eee.getSource()).getScene().getWindow().hide();
                         User temp = new User();
                         temp.setFirstName(currentUser.getFirstName());
                         temp.setPassword(currentUser.getPassword());
@@ -896,8 +907,10 @@ public class Controller {
                         if(!database.updateUser(currentUser)) {
                             currentUser = temp;
                             //todo show error
+                        } else {
+                            ((Node) event.getSource()).getScene().getWindow().hide();
+                            clickProfileButtonToolbar.fire();
                         }
-                        ((Node)event.getSource()).getScene().getWindow().hide();
                     }
                 });
                 vbx.getChildren().addAll(name, email, phone, address, chngpwd, done);
@@ -1068,8 +1081,10 @@ public class Controller {
                 @Override
                 public void handle(ActionEvent event) {
                     int index = Integer.valueOf(((Node)event.getSource()).getId());
-                    userButtons.get(index).getStyleClass().add("mybuttonpromoted");
+                    ((Node)event.getSource()).getStyleClass().add("mybuttonpromoted");
                     database.promote(users.get(index).getUserId());
+                    users = database.getUsersByPage(pageNumUsers, LIMIT);
+                    //prepareUsers(secondaryLayout);
                 }
             });
             secondaryLayout.getChildren().add(userbutton);
@@ -1671,6 +1686,7 @@ public class Controller {
         searchElements = new HashMap<>();
         database = new Model();
         allBooks = new ArrayList<Book>();
+
         currentUser = new User();
         allBooks = database.getBooksByPage(pageNum, LIMIT, new HashMap<>());
         cartBooks = new ArrayList<Book>();

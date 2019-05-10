@@ -73,7 +73,7 @@
             <URL value="@Resources/styles/style.css" />
           </stylesheets>
         </Button>
-        <Button font="$x2" mnemonicParsing="false" onAction="#clickProfile" prefHeight="39.0" prefWidth="91.0" style="&#10;" styleClass="mybutton" text="Profile" textFill="WHITE">
+        <Button fx:id="clickProfileButtonToolbar" font="$x2" mnemonicParsing="false" onAction="#clickProfile" prefHeight="39.0" prefWidth="91.0" style="&#10;" styleClass="mybutton" text="Profile" textFill="WHITE">
           <stylesheets>
             <URL value="@Resources/styles/style.css" />
           </stylesheets>
