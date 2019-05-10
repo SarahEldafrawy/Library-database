@@ -153,7 +153,6 @@ public class Model implements IModel {
         return getBook(query);
 
     }
-    //todo resultSet.next() fei wa7d ma3mello shift mesh beyrou7 ll gui
     private Book getBook(String query) {
         Book book = null;
         try {

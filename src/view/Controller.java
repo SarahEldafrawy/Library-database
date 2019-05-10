@@ -212,17 +212,17 @@ public class Controller {
         vbx.setMinHeight(297.5);
         vbx.setAlignment(Pos.CENTER);
 
-        Button report1 = new Button("Report 1");
+        Button report1 = new Button("Total Sales");
         report1.setFocusTraversable(true);
         report1.getStyleClass().add("mybutton");
         report1.setTextFill(Color.WHITE);
 
-        Button report2 = new Button("Report 2");
+        Button report2 = new Button("Top 5 Customers");
         report2.setFocusTraversable(true);
         report2.getStyleClass().add("mybutton");
         report2.setTextFill(Color.WHITE);
 
-        Button report3 = new Button("Report 3");
+        Button report3 = new Button("Top 10 Selling Books");
         report3.setFocusTraversable(true);
         report3.getStyleClass().add("mybutton");
         report3.setTextFill(Color.WHITE);
@@ -230,6 +230,8 @@ public class Controller {
             @Override
             public void handle(ActionEvent event) {
                 //todo report 1 call
+                JasperReports reports = new JasperReports();
+                reports.getTotalSales();
                 ((Node)event.getSource()).getScene().getWindow().hide();
             }
         });
@@ -237,6 +239,8 @@ public class Controller {
             @Override
             public void handle(ActionEvent event) {
                 //todo report 2 call
+                JasperReports reports = new JasperReports();
+                reports.getTop5Customers();
                 ((Node)event.getSource()).getScene().getWindow().hide();
             }
         });
@@ -244,6 +248,8 @@ public class Controller {
             @Override
             public void handle(ActionEvent event) {
                 //todo report 3 call
+                JasperReports reports = new JasperReports();
+                reports.getTop10SellingBooks();
                 ((Node)event.getSource()).getScene().getWindow().hide();
             }
         });
