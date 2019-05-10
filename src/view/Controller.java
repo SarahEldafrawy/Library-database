@@ -679,7 +679,7 @@ public class Controller {
         publisherid.setFocusTraversable(false);
         bookid.setPromptText("Enter the ISPN of the book");
         bookid.setFocusTraversable(false);
-        authors.setPromptText("Enter author(s) of the book");
+        authors.setPromptText("Enter author(s) of the book separated with spaces");
         authors.setFocusTraversable(false);
         threshold.setPromptText("Enter Threshold of the book");
         threshold.setFocusTraversable(false);
@@ -687,7 +687,7 @@ public class Controller {
         price.setFocusTraversable(false);
         count.setPromptText("How many books do we have?");
         count.setFocusTraversable(false);
-        dateOfPublishing.setPromptText("Date of publishing");
+        dateOfPublishing.setPromptText("Date of publishing in (YYYY-MM-DD)");
         dateOfPublishing.setFocusTraversable(false);
         category.setPromptText("Category of the book");
         category.setFocusTraversable(false);
@@ -1621,8 +1621,12 @@ public class Controller {
         pub2.setFont(Font.font("Cambria", 19));
         publisher.getChildren().addAll(pub1, pub2);
 
-        String auth = "Not specified";
-        //auth = book.getAuthorsIds();
+        String auth = "";
+        ArrayList<String> l = book.getAuthorsNames();
+        for(int n = 0; n < l.size(); n++) {
+            auth = auth + l.get(n) + ", ";
+        }
+        auth = auth.substring(0,auth.length()-1);
         HBox authors = new HBox();
         authors.setAlignment(Pos.CENTER);
         Label au1 = new Label("Author(s): ");
