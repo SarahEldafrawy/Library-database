@@ -93,7 +93,7 @@
             <URL value="@Resources/styles/style.css" />
           </stylesheets>
         </Button>
-        <Button id="" fx:id="viewReportButtonToolbar" font="$x2" mnemonicParsing="false" prefHeight="39.0" prefWidth="91.0" style="&#10;" styleClass="mybutton" text="Reports" textFill="WHITE" visible="true">
+        <Button id="" fx:id="viewReportButtonToolbar" onAction="#viewReport" font="$x2" mnemonicParsing="false" prefHeight="39.0" prefWidth="91.0" style="&#10;" styleClass="mybutton" text="Reports" textFill="WHITE" visible="true">
           <stylesheets>
             <URL value="@Resources/styles/style.css" />
           </stylesheets>

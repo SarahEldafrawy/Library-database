@@ -1,4 +1,6 @@
 package view;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.event.EventHandler;
@@ -39,6 +41,7 @@ public class Controller {
     HashMap<String, String> searchElements;
 
     ArrayList<User> users;
+    ArrayList<Order> orders;
     ArrayList<Author> authors;
     ArrayList<Publisher> publishers;
     ArrayList<Button> userButtons;
@@ -181,6 +184,75 @@ public class Controller {
     private ImageView validIcon;
     private int pageNumUsers = 0;
 
+    @FXML
+    void viewReport(ActionEvent event) {
+        Pane container = new Pane();
+        Scene secondScene = new Scene(container, 442.0, 296);
+        secondScene.getStylesheets().add("style.css");
+        Stage newWindow = new Stage();
+        newWindow.setTitle("view Reports");
+        newWindow.setScene(secondScene);
+
+        Image image = null;
+        try {
+            image = new Image(new FileInputStream(
+                    this.getClass().getProtectionDomain().getCodeSource().getLocation().getPath()
+                            + "../../../src/view/Resources/images/libraryy.jpg"));
+        } catch (FileNotFoundException e1) {
+            e1.printStackTrace();
+        }
+        ImageView wallpaper = new ImageView(image);
+        wallpaper.setFitHeight(297.5);
+        wallpaper.setFitWidth(442.0);
+        wallpaper.setX(0);
+        wallpaper.setY(0);
+        container.getChildren().add(wallpaper);
+        VBox vbx = new VBox();
+        vbx.setMinWidth(442);
+        vbx.setMinHeight(297.5);
+        vbx.setAlignment(Pos.CENTER);
+
+        Button report1 = new Button("Report 1");
+        report1.setFocusTraversable(true);
+        report1.getStyleClass().add("mybutton");
+        report1.setTextFill(Color.WHITE);
+
+        Button report2 = new Button("Report 2");
+        report2.setFocusTraversable(true);
+        report2.getStyleClass().add("mybutton");
+        report2.setTextFill(Color.WHITE);
+
+        Button report3 = new Button("Report 3");
+        report3.setFocusTraversable(true);
+        report3.getStyleClass().add("mybutton");
+        report3.setTextFill(Color.WHITE);
+        report1.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                //todo report 1 call
+                ((Node)event.getSource()).getScene().getWindow().hide();
+            }
+        });
+        report2.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                //todo report 2 call
+                ((Node)event.getSource()).getScene().getWindow().hide();
+            }
+        });
+        report3.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                //todo report 3 call
+                ((Node)event.getSource()).getScene().getWindow().hide();
+            }
+        });
+        vbx.getChildren().addAll(report1, report2, report3);
+        container.getChildren().add(vbx);
+        newWindow.setX(582);
+        newWindow.setY(259);
+        newWindow.show();
+    }
 
     @FXML
     void loginClicked(MouseEvent event) {
@@ -672,7 +744,17 @@ public class Controller {
         TextField threshold = new TextField();
         TextField count = new TextField();
         TextField dateOfPublishing = new TextField();
-        TextField category = new TextField();
+        ObservableList<String> options =
+                FXCollections.observableArrayList(
+                        "Art",
+                        "Science",
+                        "Geography",
+                        "History",
+                        "Religion"
+                );
+        ComboBox category = new ComboBox(options);
+        category.setPromptText("Select Category");
+
         title.setPromptText("Enter the title of the book");
         title.setFocusTraversable(false);
         publisherid.setPromptText("Enter the publisher ID");
@@ -689,8 +771,7 @@ public class Controller {
         count.setFocusTraversable(false);
         dateOfPublishing.setPromptText("Date of publishing in (YYYY-MM-DD)");
         dateOfPublishing.setFocusTraversable(false);
-        category.setPromptText("Category of the book");
-        category.setFocusTraversable(false);
+
         Button done = new Button("Done");
         done.setFocusTraversable(true);
         done.getStyleClass().add("mybutton");
@@ -703,7 +784,7 @@ public class Controller {
                 book.setPublisherId(Integer.valueOf(publisherid.getText()));
                 book.setTitle(title.getText());
                 book.setQuantity(Integer.valueOf(count.getText()));
-                book.setCategory(category.getText());
+                book.setCategory((String) category.getValue());
                 book.setSellingPrice(Float.valueOf(price.getText()));
                 book.setPubYear(dateOfPublishing.getText());
                 book.setThreshold(Integer.valueOf(threshold.getText()));
@@ -963,7 +1044,150 @@ public class Controller {
     @FXML
     void clickViewOrders(ActionEvent event) {
 
+        ScrollPane c = new ScrollPane();
+        AnchorPane container = new AnchorPane();
+        Scene secondScene = new Scene(c, 1200, 800);
+        c.setVbarPolicy(ScrollPane.ScrollBarPolicy.ALWAYS);
+        System.out.println();
+        secondScene.getStylesheets().add("style.css");
+        container.setMinWidth(1200);
+        container.setMinHeight(800);
+        VBox secondaryLayout = new VBox();
+        secondaryLayout.setMinWidth(1200);
+        secondaryLayout.setMinHeight(800);
+        secondaryLayout.setAlignment(Pos.CENTER);
+        secondaryLayout.setSpacing(3);
+        try {
+            Image image = new Image(new FileInputStream(
+                    this.getClass().getProtectionDomain().getCodeSource().getLocation().getPath()
+                            + "../../../src/view/Resources/images/libraryy.jpg"));
+            ImageView wallpaper = new ImageView(image);
+            wallpaper.setFitHeight(800);
+            wallpaper.setFitWidth(1200);
+            wallpaper.setX(0);
+            wallpaper.setY(0);
+            //       container.getChildren().add(wallpaper);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        orders = new ArrayList<>();
+        pageNumUsers = 0;
+        orders = database.getAllOrders();
+        userButtons = new ArrayList<>();
+
+        prepareOrders(secondaryLayout);
+        c.setContent(container);
+        container.getChildren().add(secondaryLayout);
+        Stage newWindow = new Stage();
+        newWindow.setTitle("Orders");
+        newWindow.setScene(secondScene);
+
+        // Set position of second window, related to primary window.
+        newWindow.setX(382);
+        newWindow.setY(109);
+
+        newWindow.show();
     }
+
+    private void prepareOrders(VBox secondaryLayout) {
+        Button search = new Button("Add new Order");
+        search.getStyleClass().add("mybutton");
+        search.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                Pane container = new Pane();
+                Scene secondScene = new Scene(container, 442.0, 296);
+                secondScene.getStylesheets().add("style.css");
+                Stage newWindow = new Stage();
+                newWindow.setTitle("Add Order");
+                newWindow.setScene(secondScene);
+
+                Image image = null;
+                try {
+                    image = new Image(new FileInputStream(
+                            this.getClass().getProtectionDomain().getCodeSource().getLocation().getPath()
+                                    + "../../../src/view/Resources/images/libraryy.jpg"));
+                } catch (FileNotFoundException e1) {
+                    e1.printStackTrace();
+                }
+                ImageView wallpaper = new ImageView(image);
+                wallpaper.setFitHeight(297.5);
+                wallpaper.setFitWidth(442.0);
+                wallpaper.setX(0);
+                wallpaper.setY(0);
+                container.getChildren().add(wallpaper);
+                VBox vbx = new VBox();
+                vbx.setMinWidth(442);
+                vbx.setMinHeight(297.5);
+                vbx.setAlignment(Pos.CENTER);
+
+                TextField bookid = new TextField();
+                bookid.setPromptText("Enter book id");
+                bookid.setFocusTraversable(false);
+
+                TextField quantity = new TextField();
+                quantity.setPromptText("Enter Quantity wanted");
+                quantity.setFocusTraversable(false);
+
+                Button done = new Button("place order");
+                done.setFocusTraversable(true);
+                done.getStyleClass().add("mybutton");
+                done.setTextFill(Color.WHITE);
+                done.setOnAction(new EventHandler<ActionEvent>() {
+                    @Override
+                    public void handle(ActionEvent event) {
+                        database.placeOrder(Integer.valueOf(bookid.getText()), Integer.valueOf(quantity.getText()));
+                        ((Node)event.getSource()).getScene().getWindow().hide();
+                        orders = database.getAllOrders();
+                        prepareOrders(secondaryLayout);
+                    }
+                });
+                vbx.getChildren().addAll(bookid, quantity, done);
+                container.getChildren().add(vbx);
+                newWindow.setX(582);
+                newWindow.setY(259);
+                newWindow.show();
+            }
+        });
+        secondaryLayout.getChildren().clear();
+        secondaryLayout.getChildren().add(search);
+        if(orders == null) {
+            return;
+        }
+        for (int i = 0; i < orders.size(); i++) {
+            Button userbutton = new Button();
+            userbutton.setMinHeight(60);
+            userbutton.setMinWidth(1200);
+            userButtons.add(userbutton);
+            String userOnButton = "Book Id: " + orders.get(i).getBookId() + "";
+            userOnButton = userOnButton + "\t\t";
+            userOnButton = userOnButton + "Quantity: " + orders.get(i).getQuantity();
+            userOnButton = userOnButton + "\t\t";
+            userOnButton = userOnButton + "Date: " + orders.get(i).getDate();
+            userOnButton = userOnButton + "\t\t";
+            userbutton.setTextFill(Color.WHITE);
+            userbutton.getStyleClass().add("mybutton");
+            userbutton.setTextAlignment(TextAlignment.LEFT);
+            userbutton.setId(String.valueOf(i));
+            userbutton.setFont(Font.font("Cambria", 23));
+            userbutton.setText(userOnButton);
+            userbutton.setOnAction(new EventHandler<ActionEvent>() {
+                @Override
+                public void handle(ActionEvent event) {
+                    int index = Integer.valueOf(((Node)event.getSource()).getId());
+                    ((Node)event.getSource()).getStyleClass().add("mybuttonpromoted");
+                    database.confirmOrder(orders.get(index).getOrderId());
+                    orders = database.getAllOrders();
+                    prepareOrders(secondaryLayout);
+                    allBooks = database.getBooksByPage(pageNum, LIMIT, new HashMap<>());
+                    prepareBooks(allBooks);
+                    //prepareUsers(secondaryLayout);
+                }
+            });
+            secondaryLayout.getChildren().add(userbutton);
+        }
+    }
+
     @FXML
     void clickViewUsers(ActionEvent event) {
         ScrollPane c = new ScrollPane();

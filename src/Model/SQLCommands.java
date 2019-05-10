@@ -81,21 +81,22 @@ public class SQLCommands {
     }
 
     public String getAllOrders() {
-        String query = "SELECT * FROM ORDER";
+        String query = "SELECT * FROM `ORDER`";
+        System.out.println(query);
         return query;
     }
 
     public String placeOrder(Order order) {
-        String query = "INSERT INTO ORDER VALUES ("
+        String query = "INSERT INTO `ORDER` VALUES ("
                 +order.getOrderId() + ","
                 +order.getBookId() + ","
                 +order.getQuantity() + ","
-                +order.getDate() + ")";
+                +"current_date" + ")";
         return query;
     }
 
     public String deleteOrder(int orderId) {
-        String query = "DELETE FROM ORDER WHERE ORDER.order_id = "
+        String query = "DELETE FROM `ORDER` WHERE ORDER.order_id = "
                 + orderId ;
         return query;
     }
