@@ -197,12 +197,13 @@ public class Controller {
             String password = passwordTextbox.getText();
             if(!email.equals("admin") & !email.equals("")) {
                 currentUser = database.logIn(email, password);
-                database.emptyCart(currentUser.getUserId());
+
             }
             if(currentUser == null && !(email.equals("admin") && password.equals("admin")) &&
                     !(email.equals("") && password.equals(""))) {
                 showErrorLogIn();
             } else {
+                database.emptyCart(currentUser.getUserId());
                 showMarket();
                 prepareBooks(allBooks);
             }
@@ -719,7 +720,7 @@ public class Controller {
                 ((Node)event.getSource()).getScene().getWindow().hide();
             }
         });
-        vbx.getChildren().addAll(title, bookid, authors,publisherid, price, count, dateOfPublishing, category, done);
+        vbx.getChildren().addAll(title, bookid, authors, publisherid, price, count, threshold, dateOfPublishing, category, done);
         container.getChildren().add(vbx);
         newWindow.setX(582);
         newWindow.setY(259);
