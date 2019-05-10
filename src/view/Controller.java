@@ -668,6 +668,7 @@ public class Controller {
         TextField authors = new TextField();
         TextField publisherid = new TextField();
         TextField price = new TextField();
+        TextField threshold = new TextField();
         TextField count = new TextField();
         TextField dateOfPublishing = new TextField();
         TextField category = new TextField();
@@ -679,6 +680,8 @@ public class Controller {
         bookid.setFocusTraversable(false);
         authors.setPromptText("Enter author(s) of the book");
         authors.setFocusTraversable(false);
+        threshold.setPromptText("Enter Threshold of the book");
+        threshold.setFocusTraversable(false);
         price.setPromptText("How much is that book?");
         price.setFocusTraversable(false);
         count.setPromptText("How many books do we have?");
@@ -702,6 +705,7 @@ public class Controller {
                 book.setCategory(category.getText());
                 book.setSellingPrice(Float.valueOf(price.getText()));
                 book.setPubYear(dateOfPublishing.getText());
+                book.setThreshold(Integer.valueOf(threshold.getText()));
                 String[] authorsIdsArr = new String[50];
                 ArrayList<Integer> authorsIds = new ArrayList<>();
                 if(!authors.getText().equals("")) {
@@ -1077,8 +1081,10 @@ public class Controller {
                 @Override
                 public void handle(ActionEvent event) {
                     int index = Integer.valueOf(((Node)event.getSource()).getId());
-                    userButtons.get(index).getStyleClass().add("mybuttonpromoted");
+                    ((Node)event.getSource()).getStyleClass().add("mybuttonpromoted");
                     database.promote(users.get(index).getUserId());
+                    users = database.getUsersByPage(pageNumUsers, LIMIT);
+                    //prepareUsers(secondaryLayout);
                 }
             });
             secondaryLayout.getChildren().add(userbutton);
