@@ -27,6 +27,10 @@ public class Book {
     ArrayList<Integer> authorsIds = null;
     ArrayList<String> authorsNames = null;
 
+    public ArrayList<String> getAuthorsNames() {
+        return authorsNames;
+    }
+
     public String getPublisherName() {
         return PublisherName;
     }
