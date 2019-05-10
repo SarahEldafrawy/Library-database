@@ -21,6 +21,8 @@ public interface IModel {
     Book getBookByTitle(String title);
     int getNumberOfPagesOfUsers();
     ArrayList<User> getUsersByPage(int pageNumber, int limit);
+    boolean addCreditCard (int userId , String creditNumber);
+    boolean checkCreditCard (int userId, String creditNumber);
 
     //manager functions
     ArrayList<User> getAllUsers();

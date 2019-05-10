@@ -250,4 +250,17 @@ public class SQLCommands {
                 + bookId +")";
         return query;
     }
+
+    public String addToCreditCard(int userId, String creditNumber) {
+        String query = "INSERT INTO CREDIT_CARD VALUES ("
+                +userId + ","
+                +"\"" + creditNumber +"\")";
+        return query;
+    }
+
+    public String checkCreditNumber(int userId, String creditNumber) {
+        String query = "SELECT * FORM CREDIT_CARD WHERE CREDIT_CARD.user_id = "
+                + userId +" AND CREDIT_CARD.credit_number = \"" + creditNumber + "\"";
+        return query;
+    }
 }

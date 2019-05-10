@@ -107,6 +107,31 @@ public class Model implements IModel {
         return getUsers(query);
     }
 
+    @Override
+    public boolean addCreditCard(int userId, String creditNumber) {
+        String query =sQlCommands.addToCreditCard(userId,creditNumber);
+        return update(query);
+    }
+
+    @Override
+    public boolean checkCreditCard(int userId, String creditNumber) {
+        String query = sQlCommands.checkCreditNumber(userId,creditNumber);
+        int count = 0;
+        try {
+            ResultSet resultSet = connectionHandler.executeQuery(query);
+
+            while (resultSet.next()){
+                count ++;
+            }
+        } catch (SQLException e) {
+            printingSQLException(e);
+        }
+        if (count > 0)
+            return true;
+        else
+            return false;
+    }
+
     private ArrayList<User> getUsers(String query) {
         ArrayList<User> users = new ArrayList<>();
         return getUsers(query, users);
