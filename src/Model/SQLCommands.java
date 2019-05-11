@@ -259,8 +259,17 @@ public class SQLCommands {
     }
 
     public String checkCreditNumber(int userId, String creditNumber) {
-        String query = "SELECT * FORM CREDIT_CARD WHERE CREDIT_CARD.user_id = "
-                + userId +" AND CREDIT_CARD.credit_number = \"" + creditNumber + "\"";
+//        String query = "SELECT * FORM CREDIT_CARD WHERE CREDIT_CARD.user_id = "
+//                + userId +" AND CREDIT_CARD.credit_number = \"" + creditNumber + "\"";
+        String query = "insert into CREDIT_CARD VALUES ( " + userId + ", "+creditNumber+" )";
+        System.out.println(creditNumber);
         return query;
     }
+
+    public String getTotalPriceInCart(int user_id) {
+        String query = "select sum(CART.quantity*BOOK.selling_price) total " +
+                "from CART, BOOK where CART.book_id = BOOK.book_id AND CART.user_id = " + user_id;
+        return query;
+    }
+
 }
