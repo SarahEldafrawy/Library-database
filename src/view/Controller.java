@@ -229,7 +229,6 @@ public class Controller {
         report1.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                //todo report 1 call
                 JasperReports reports = new JasperReports();
                 reports.getTotalSales();
                 ((Node)event.getSource()).getScene().getWindow().hide();
@@ -238,7 +237,6 @@ public class Controller {
         report2.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                //todo report 2 call
                 JasperReports reports = new JasperReports();
                 reports.getTop5Customers();
                 ((Node)event.getSource()).getScene().getWindow().hide();
@@ -247,7 +245,6 @@ public class Controller {
         report3.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                //todo report 3 call
                 JasperReports reports = new JasperReports();
                 reports.getTop10SellingBooks();
                 ((Node)event.getSource()).getScene().getWindow().hide();
@@ -404,7 +401,6 @@ public class Controller {
         search1.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                //todo show single book page search by id
                 showCertainBook(database.getBookById(Integer.valueOf(id.getText())));
             }
         });
@@ -416,7 +412,6 @@ public class Controller {
         search2.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                //todo show single book page search by title
                 String titlee = title.getText();
                 showCertainBook(database.getBookByTitle(titlee));
             }
@@ -531,8 +526,19 @@ public class Controller {
         done.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                //todo create new author and add it to database, done
-                ((Node)event.getSource()).getScene().getWindow().hide();
+                String masterCard = prt1.getText() + "-" +
+                                    prt2.getText() + "-" +
+                                    prt3.getText() + "-" +
+                                    prt4.getText();
+                if(database.checkCreditCard(currentUser.getUserId(), masterCard)) {
+                    ((Node)event.getSource()).getScene().getWindow().hide();
+                    database.checkout(currentUser.getUserId());
+                    cartBooks = new ArrayList<>();
+                    prepareBooks(cartBooks);
+                } else {
+                    done.setText("Wrong MasterCard - Try Again");
+                }
+
             }
         });
         vbx.getChildren().addAll(mcard, done);
@@ -540,8 +546,6 @@ public class Controller {
         newWindow.setX(582);
         newWindow.setY(259);
         newWindow.show();
-        database.checkout(currentUser.getUserId());
-        cartBooks = new ArrayList<>();
         prepareBooks(cartBooks);
     }
     @FXML
@@ -550,7 +554,8 @@ public class Controller {
         showMarket();
         pageNum = 0;
         pageNumLabel.setText(String.valueOf(pageNum));
-        prepareBooks(database.getBooksByPage(pageNum, LIMIT, new HashMap<>()));
+        allBooks = database.getBooksByPage(pageNum, LIMIT, new HashMap<>());
+        prepareBooks(allBooks);
     }
     @FXML
     void clickLogout(ActionEvent event) {
@@ -606,7 +611,6 @@ public class Controller {
         done.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                //todo create new publisher and add it to database
                 Publisher pub = new Publisher();
                 pub.setAddress(pubAddress.getText());
                 pub.setName(pubName.getText());
@@ -962,7 +966,94 @@ public class Controller {
                 TextField address = new TextField(currentUser.getEmailAddress());
                 TextField phone = new TextField(currentUser.getPhoneNumber());
                 TextField name = new TextField(currentUser.getFirstName()+ " " + currentUser.getLastName());
-                //TextField mastercard = new TextField(currentUser.);
+                Button mastercard = new Button("Add MasterCard");
+                mastercard.getStyleClass().add("mybutton");
+                mastercard.setOnAction(new EventHandler<ActionEvent>() {
+                    @Override
+                        public void handle(ActionEvent e) {
+                        Pane container = new Pane();
+                        Scene secondScene = new Scene(container, 442.0, 296);
+                        secondScene.getStylesheets().add("style.css");
+                        Stage newWindow = new Stage();
+                        newWindow.setTitle("Master Card");
+                        newWindow.setScene(secondScene);
+
+                        Image image = null;
+                        try {
+                            image = new Image(new FileInputStream(
+                                    this.getClass().getProtectionDomain().getCodeSource().getLocation().getPath()
+                                            + "../../../src/view/Resources/images/libraryy.jpg"));
+                        } catch (FileNotFoundException e1) {
+                            e1.printStackTrace();
+                        }
+                        ImageView wallpaper = new ImageView(image);
+                        wallpaper.setFitHeight(297.5);
+                        wallpaper.setFitWidth(442.0);
+                        wallpaper.setX(0);
+                        wallpaper.setY(0);
+                        container.getChildren().add(wallpaper);
+                        VBox vbx = new VBox();
+                        vbx.setMinWidth(442);
+                        vbx.setMinHeight(297.5);
+                        vbx.setAlignment(Pos.CENTER);
+
+                        HBox mcard = new HBox();
+                        TextField prt1 = new TextField();
+                        prt1.setPromptText("XXXX");
+                        prt1.setFocusTraversable(false);
+                        Label sep1 = new Label("-");
+                        Label sep2 = new Label("-");
+                        Label sep3 = new Label("-");
+                        sep1.setFont(Font.font("Cambria", 30));
+                        sep1.setTextFill(Color.WHITE);
+                        sep2.setFont(Font.font("Cambria", 30));
+                        sep3.setFont(Font.font("Cambria", 30));
+                        sep2.setTextFill(Color.WHITE);
+                        sep3.setTextFill(Color.WHITE);
+                        TextField prt2 = new TextField();
+                        prt2.setPromptText("XXXX");
+                        prt2.setFocusTraversable(false);
+                        TextField prt3 = new TextField();
+                        prt3.setPromptText("XXXX");
+                        prt3.setFocusTraversable(false);
+                        TextField prt4 = new TextField();
+                        prt4.setPromptText("XXXX");
+                        prt4.setFocusTraversable(false);
+                        prt1.setMaxWidth(70);
+                        prt2.setMaxWidth(70);
+                        prt3.setMaxWidth(70);
+                        prt4.setMaxWidth(70);
+                        mcard.setAlignment(Pos.CENTER);
+                        mcard.setMinWidth(442);
+                        vbx.setSpacing(1);
+
+                        mcard.getChildren().addAll(prt1,sep1,prt2,sep2, prt3,sep3,prt4);
+                        Button done = new Button("Add Master card");
+                        done.setTextFill(Color.WHITE);
+                        done.setFocusTraversable(true);
+                        done.getStyleClass().add("mybutton");
+                        done.setTextFill(Color.WHITE);
+                        done.setOnAction(new EventHandler<ActionEvent>() {
+                            @Override
+                            public void handle(ActionEvent event) {
+                                String masterCard = prt1.getText() + "-" +
+                                        prt2.getText() + "-" +
+                                        prt3.getText() + "-" +
+                                        prt4.getText();
+                                if(database.checkCreditCard(currentUser.getUserId(), masterCard)) {
+                                    database.addCreditCard(currentUser.getUserId(), masterCard);
+                                    ((Node)event.getSource()).getScene().getWindow().hide();
+                                }
+
+                            }
+                        });
+                        vbx.getChildren().addAll(mcard, done);
+                        container.getChildren().add(vbx);
+                        newWindow.setX(582);
+                        newWindow.setY(259);
+                        newWindow.show();
+                        }
+                    });
                 Button chngpwd = new Button("Change Password");
                 chngpwd.setFocusTraversable(true);
                 chngpwd.getStyleClass().add("mybutton");
@@ -1020,13 +1111,13 @@ public class Controller {
                                 temp.setEmailAddress(currentUser.getEmailAddress());
                                 temp.setLastName(currentUser.getLastName());
                                 temp.setUserId(currentUser.getUserId());
-                                if(newpassword.getText() != confirmpasswrd.getText() || !oldpassword.equals(currentUser.getPassword())) {
-                                    //todo make error not matching
+                                if((newpassword.getText() != confirmpasswrd.getText()) || !oldpassword.equals(currentUser.getPassword())) {
+                                    chngpwd.setText("Password Doesn't match");
                                 } else {
                                     currentUser.setPassword(newpassword.getText());
                                     if(!database.updateUser(currentUser)) {
                                         currentUser.setPassword(temp.getPassword());
-                                        //todo show error
+                                        chngpwd.setText("Error updating (DB error)");
                                     }
                                 }
 
@@ -1073,7 +1164,7 @@ public class Controller {
                         }
                     }
                 });
-                vbx.getChildren().addAll(name, email, phone, address, chngpwd, done);
+                vbx.getChildren().addAll(name, email, phone, address, mastercard, chngpwd, done);
                 container.getChildren().add(vbx);
                 newWindow.setX(582);
                 newWindow.setY(259);
@@ -1510,7 +1601,6 @@ public class Controller {
         done.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                //todo create new author and add it to database, done
                 Author author = new Author();
                 author.setName(authorName.getText());
                 database.addAuthor(author);
@@ -1530,7 +1620,7 @@ public class Controller {
         if(!searchAuthorTextbox.getText().equals("")) {
             searchElements.put(book.AUTHOR_NAME, searchAuthorTextbox.getText());
         }
-        if(!searchCategoryTextbox.getValue().equals("")) {
+        if(searchCategoryTextbox.getValue() != null) {
             searchElements.put(book.CATEGORY, (String)searchCategoryTextbox.getValue());
         }
         if(!searchTitleTextbox.getText().equals("")) {
@@ -1579,17 +1669,11 @@ public class Controller {
                 container.setLayoutY(yValue * VERTICAL_SHIFT + MARGIN);
                 xValue++;
             } else {
-                if(i==BOOKS_PER_ROW) {
-                    xValue = 0;
-                    yValue++;
-                }
+                xValue = 0;
+                yValue++;
                 container.setLayoutY(yValue * VERTICAL_SHIFT + MARGIN);
                 container.setLayoutX(xValue * HORIZONTAL_SHIFT + MARGIN);
-                if(i!=BOOKS_PER_ROW) {
-                    xValue = 0;
-                    yValue++;
-                }
-
+                xValue++;
             }
             /*==============adjusting container style==================================*/
             String cssLayout2 =
@@ -1680,7 +1764,6 @@ public class Controller {
                                 "-fx-text-fill: WHITE ;");
                         int index = Integer.valueOf(((Button)(event.getSource())).getId());
                         int quantity = Integer.valueOf(currentCount[index].getText());
-                        //todo check if not already added ( when home after cart )
                         database.addToCart(allLibraryBooks.get(index).getBookId(),quantity,currentUser.getUserId());
                         boolean found = false;
                         for(int m = 0; m < cartBooks.size(); m++) {
@@ -1721,16 +1804,20 @@ public class Controller {
             container.getChildren().addAll(bookLabel, bookAuthor, count, counter, price, addToCartButton[i], newLine);
             root.getChildren().add(container);
         }
+        double totalPrice = 0.0;
         if(cartBooks.size() != 0) {
-            cartElem = database.getCart(currentUser.getUserId());
-            for(int k = 0; k < cartElem.size(); k++) {
+            //cartElem = database.getCart(currentUser.getUserId());
+            //for(int k = 0; k < cartElem.size(); k++) {
                 for(int l = 0; l < cartBooks.size(); l++) {
-                    if(cartBooks.get(l).getBookId() == cartElem.get(k).getBookId()) {
-                        currentCount[l].setText(cartElem.get(k).getQuantity()+"");
-                    }
+                    //if(cartBooks.get(l).getBookId() == cartElem.get(k).getBookId()) {
+                        //currentCount[l].setText(cartElem.get(k).getQuantity()+"");
+                        totalPrice+= /*cartElem.get(k).getQuantity()*/ 1 * cartBooks.get(l).getSellingPrice();
+                    //}
                 }
-            }
+            //}
         }
+        checkoutButton.setText("Checkout. LE " + totalPrice);
+
     }
     private void showErrorLogIn() {
         errorLoginLabel.setVisible(true);
@@ -1991,14 +2078,14 @@ public class Controller {
     private void establishNewConncetion() throws SQLException, ClassNotFoundException {
         pageNum = 0;
         searchElements = new HashMap<>();
-        database = new Model();
+        //database = new Model();
         allBooks = new ArrayList<Book>();
 
         currentUser = new User();
-        allBooks = database.getBooksByPage(pageNum, LIMIT, new HashMap<>());
+        //allBooks = database.getBooksByPage(pageNum, LIMIT, new HashMap<>());
         cartBooks = new ArrayList<Book>();
 
-        /*currentUser.setFirstName("Islam");
+        currentUser.setFirstName("Islam");
         currentUser.setLastName("Gamal");
         currentUser.setEmailAddress("islamgamal77@gmail.com");
         currentUser.setPromoted(true);
@@ -2017,6 +2104,5 @@ public class Controller {
             book.setQuantity((int)(Math. random() * 50 + 1));
             allBooks.add(book);
         }
-*/
     }
 }
