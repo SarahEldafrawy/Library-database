@@ -349,7 +349,7 @@ public class Controller {
     }
     @FXML
     void increaseBPP(MouseEvent event) {
-        if(BOOKS_PER_ROW != 5) {
+        if(BOOKS_PER_ROW != 8) {
             BOOKS_PER_ROW++;
             HORIZONTAL_SHIFT = (1130 / BOOKS_PER_ROW);
             if(isNowCart) {

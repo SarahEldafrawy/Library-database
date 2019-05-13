@@ -17,7 +17,7 @@
    <queryString language="SQL">
 	<![CDATA[Select BOOK.book_id, BOOK.title, SALES.total_price
 FROM BOOK, SALES
-where BOOK.book_id = SALES.book_id;]]>
+where BOOK.book_id = SALES.book_id AND SALES.date_of_sale >= date_sub(current_date , INTERVAL 90 DAY);]]>
    </queryString>
 
    <field name="book_id" class="java.lang.String">

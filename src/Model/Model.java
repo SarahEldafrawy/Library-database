@@ -260,6 +260,7 @@ public class Model implements IModel {
     @Override
     public boolean checkout(int userId) {
         try {
+            System.out.println("checkout purchase");
             connectionHandler.prepareCall(userId , -1);
         } catch (SQLException e) {
             printingSQLException(e);
@@ -278,7 +279,9 @@ public class Model implements IModel {
     @Override
     public boolean promote(int userId) {
         String query = sQlCommands.promoteUser(userId);
-        return update(query);
+        boolean bool = update(query);
+        System.out.println(bool);
+        return bool;
     }
 
     private boolean update(String query) {

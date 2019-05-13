@@ -259,7 +259,7 @@ public class SQLCommands {
     }
 
     public String checkCreditNumber(int userId, String creditNumber) {
-        String query = "SELECT * FORM CREDIT_CARD WHERE CREDIT_CARD.user_id = "
+        String query = "SELECT * FROM CREDIT_CARD WHERE CREDIT_CARD.user_id = "
                 + userId +" AND CREDIT_CARD.credit_number = \"" + creditNumber + "\"";
         return query;
     }

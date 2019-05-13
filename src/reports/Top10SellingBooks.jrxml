@@ -16,7 +16,7 @@
 
    <queryString language="SQL">
 	<![CDATA[SELECT BOOK.book_id, BOOK.title, TOP_SALES.sales
-   FROM BOOK, (SELECT SUM(SALES.total_price) as sales, book_id FROM SALES GROUP BY book_id ORDER BY sales DESC LIMIT 10) as TOP_SALES
+   FROM BOOK, (SELECT SUM(SALES.total_price) as sales, book_id FROM SALES where SALES.date_of_sale >= date_sub(current_date , INTERVAL 30 DAY)GROUP BY book_id ORDER BY sales DESC LIMIT 10) as TOP_SALES
 where TOP_SALES.book_id = BOOK.book_id]]>
    </queryString>
 
