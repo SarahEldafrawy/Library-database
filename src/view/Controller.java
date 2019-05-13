@@ -1045,7 +1045,6 @@ public class Controller {
                                         ((Node) event.getSource()).getScene().getWindow().hide();
                                     }
 
-
                             }
                         });
                         vbx.getChildren().addAll(mcard, done);
@@ -1807,15 +1806,15 @@ public class Controller {
         }
         double totalPrice = 0.0;
         if(cartBooks.size() != 0) {
-            //cartElem = database.getCart(currentUser.getUserId());
-            //for(int k = 0; k < cartElem.size(); k++) {
+            cartElem = database.getCart(currentUser.getUserId());
+            for(int k = 0; k < cartElem.size(); k++) {
                 for(int l = 0; l < cartBooks.size(); l++) {
-                    //if(cartBooks.get(l).getBookId() == cartElem.get(k).getBookId()) {
-                        //currentCount[l].setText(cartElem.get(k).getQuantity()+"");
-                        totalPrice+= /*cartElem.get(k).getQuantity()*/ 1 * cartBooks.get(l).getSellingPrice();
-                    //}
+                    if(cartBooks.get(l).getBookId() == cartElem.get(k).getBookId()) {
+                        currentCount[l].setText(cartElem.get(k).getQuantity()+"");
+                        totalPrice+= cartElem.get(k).getQuantity()* cartBooks.get(l).getSellingPrice();
+                    }
                 }
-            //}
+            }
         }
         checkoutButton.setText("Checkout. LE " + totalPrice);
 
