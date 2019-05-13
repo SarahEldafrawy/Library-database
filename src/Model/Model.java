@@ -115,23 +115,21 @@ public class Model implements IModel {
 
     @Override
     public boolean checkCreditCard(int userId, String creditNumber) {
-//        String query = sQlCommands.checkCreditNumber(userId,creditNumber);
-//        int count = 0;
-//        try {
-//            ResultSet resultSet = connectionHandler.executeQuery(query);
-//
-//            while (resultSet.next()){
-//                count ++;
-//            }
-//        } catch (SQLException e) {
-//            printingSQLException(e);
-//        }
-//        if (count > 0)
-//            return true;
-//        else
-//            return false;
         String query = sQlCommands.checkCreditNumber(userId,creditNumber);
-        return update(query);
+        int count = 0;
+        try {
+            ResultSet resultSet = connectionHandler.executeQuery(query);
+
+            while (resultSet.next()){
+                count ++;
+            }
+        } catch (SQLException e) {
+            printingSQLException(e);
+        }
+        if (count > 0)
+            return true;
+        else
+            return false;
     }
 
     private ArrayList<User> getUsers(String query) {

@@ -1040,10 +1040,11 @@ public class Controller {
                                         prt2.getText() + "-" +
                                         prt3.getText() + "-" +
                                         prt4.getText();
-                                if(database.checkCreditCard(currentUser.getUserId(), masterCard)) {
-                                    database.addCreditCard(currentUser.getUserId(), masterCard);
-                                    ((Node)event.getSource()).getScene().getWindow().hide();
-                                }
+
+                                    if(database.addCreditCard(currentUser.getUserId(), masterCard)) {
+                                        ((Node) event.getSource()).getScene().getWindow().hide();
+                                    }
+
 
                             }
                         });
@@ -2078,31 +2079,31 @@ public class Controller {
     private void establishNewConncetion() throws SQLException, ClassNotFoundException {
         pageNum = 0;
         searchElements = new HashMap<>();
-        //database = new Model();
+        database = new Model();
         allBooks = new ArrayList<Book>();
 
         currentUser = new User();
-        //allBooks = database.getBooksByPage(pageNum, LIMIT, new HashMap<>());
+        allBooks = database.getBooksByPage(pageNum, LIMIT, new HashMap<>());
         cartBooks = new ArrayList<Book>();
 
-        currentUser.setFirstName("Islam");
-        currentUser.setLastName("Gamal");
-        currentUser.setEmailAddress("islamgamal77@gmail.com");
-        currentUser.setPromoted(true);
-        currentUser.setShippingAddress("Alzorkani ST, Miami, Alexandria");
-        currentUser.setPhoneNumber("(+20) 109-144-8249");
-        currentUser.setPassword("mypassword");
+//        currentUser.setFirstName("Islam");
+//        currentUser.setLastName("Gamal");
+//        currentUser.setEmailAddress("islamgamal77@gmail.com");
+//        currentUser.setPromoted(true);
+//        currentUser.setShippingAddress("Alzorkani ST, Miami, Alexandria");
+//        currentUser.setPhoneNumber("(+20) 109-144-8249");
+//        currentUser.setPassword("mypassword");
 
-        for(int i = 0; i < 20; i++) {
-            Book book = new Book();
-            book.setBookId(i);
-            book.setCategory("Science");
-            book.setPublisherId(5);
-            book.setPubYear("23 July 1997");
-            book.setSellingPrice((int)(Math. random() * 2000 + 1));
-            book.setTitle("Book Number " + i);
-            book.setQuantity((int)(Math. random() * 50 + 1));
-            allBooks.add(book);
-        }
+//        for(int i = 0; i < 20; i++) {
+//            Book book = new Book();
+//            book.setBookId(i);
+//            book.setCategory("Science");
+//            book.setPublisherId(5);
+//            book.setPubYear("23 July 1997");
+//            book.setSellingPrice((int)(Math. random() * 2000 + 1));
+//            book.setTitle("Book Number " + i);
+//            book.setQuantity((int)(Math. random() * 50 + 1));
+//            allBooks.add(book);
+//        }
     }
 }
